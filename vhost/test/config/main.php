@@ -7,10 +7,12 @@ $params = array_merge(
 );
 
 return [
-    'id' => 'app-frontend',
+    'id' => 'app-test',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
-    'controllerNamespace' => 'frontend\controllers',
+    'controllerNamespace' => 'test\controllers',
+	//更改默认controller，原值为site
+	'defaultRoute'  => 'index',
     'components' => [
         'user' => [
             'identityClass' => 'common\models\User',
@@ -24,9 +26,6 @@ return [
                     'levels' => ['error', 'warning'],
                 ],
             ],
-        ],
-        'errorHandler' => [
-            'errorAction' => 'site/error',
         ],
         
         'urlManager' => [
