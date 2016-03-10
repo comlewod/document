@@ -5,10 +5,9 @@ use yii\web\Controller;
 
 class IndexController extends Controller {
 	public function actionIndex(){
-		var_dump(123);die;
+		var_dump(1231);die;
 	}
 	public function actions(){
-		var_dump(123);die;
 	}
 }
 ?>
