@@ -1,13 +1,11 @@
 <?php
 namespace test\controllers;
 
-use yii\web\Controller;
+use common\components\TestController;
 
-class IndexController extends Controller {
+class IndexController extends TestController {
 	public function actionIndex(){
-		var_dump(1231);die;
-	}
-	public function actions(){
+		$this->display();
 	}
 }
 ?>
