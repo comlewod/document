@@ -1,7 +1,4 @@
-require('./main.css');
-require('./module.js');
+//require('./main.css');
+//require('./module.js');
+document.write('hello, comlewod');
 
-function fn(){
-	console.log('hello, comlewod');
-}
-console.log(3531);
