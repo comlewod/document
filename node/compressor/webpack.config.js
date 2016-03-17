@@ -13,13 +13,17 @@ module.exports = {
 		loaders: [
 			{ 
 				test: /\.css$/, 
+				include: [
+					//path.resolve(__dirname, '..', '..', 'pages')
+					path.resolve(__dirname, '..', '..', 'node/compressor')
+				],
 				loader: "style-loader!css-loader",
 			}
 		]
 	},
 	resolve: {
 		root: [
-			path.resolve('/')
+			path.resolve(__dirname, '..', '..', 'node/compressor')
 		],
 		//moduleDirectories: [path.resolve(__dirname)],
 		extensions: ['', '.js', '.css']
