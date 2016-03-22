@@ -5,19 +5,12 @@ module.exports = {
 	entry: './main.js',
 	output: {
 		path: './../../output',
-		filename: 'final.js'
+		filename: 'bundle.js'
 	},
 	module: {
 		loaders: [
-			{test: /\.css$/, loader: 'style!css'}
+			{ test: /\.jsx$/, loader: 'jsx-loader' }
 		]
-	},
-	resolve: {
-		root: path.resolve(__dirname, '..'),
-		extensions: ['', '.js', '.css'],
-		alias: {
-			asale: 'sale.js'
-		}
 	},
 	watch: true
 };

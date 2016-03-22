@@ -1,9 +1,7 @@
-require('./main.css');
-//var sale = require('./sale.js');
-var sale = require('asale');
-var $ = require('jquery');
+var React = require('react');
+var ReactDom = require('react-dom');
+var Cake = require('./cake.jsx');
 
-document.write('hello, comlewod');
-var a = sale();
-console.log(a.name);
+
+
 
