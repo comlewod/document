@@ -34,7 +34,7 @@
 /******/ 	__webpack_require__.c = installedModules;
 
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = "/output";
 
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
@@ -46,9 +46,9 @@
 
 	var React = __webpack_require__(1);
 	var ReactDom = __webpack_require__(158);
-	var $ = __webpack_require__(160);
+	var $ = __webpack_require__(159);
 
-	var Cake = __webpack_require__(159);
+	var Cake = __webpack_require__(160);
 	var House = Cake.house;
 	ReactDom.render(
 		React.createElement(House, null),
@@ -19661,39 +19661,6 @@
 /* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(1);
-	var ReactDom = __webpack_require__(158);
-	var $ = __webpack_require__(160);
-
-	var name_arr = ['comlewod', 'koala', 'smith'];
-
-	var CakeSale = React.createClass({displayName: "CakeSale",
-		render: function(){
-			return (
-				React.createElement("div", {onClick: this.props.clickBack}, "子组件")
-			);
-		}
-	});
-
-	var House = React.createClass({displayName: "House",
-		parentClick: function(){
-			console.log(123);
-		},
-		render: function(){
-			return (
-				React.createElement("div", null, 
-					React.createElement(CakeSale, {ref: "cake", clickBack: this.parentClick})
-				)
-			);
-		}
-	});
-	module.exports.house = House;
-
-
-/***/ },
-/* 160 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 	 * jQuery JavaScript Library v2.2.2
 	 * http://jquery.com/
@@ -29536,6 +29503,39 @@
 
 	return jQuery;
 	}));
+
+
+/***/ },
+/* 160 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var ReactDom = __webpack_require__(158);
+	var $ = __webpack_require__(159);
+
+	var name_arr = ['comlewod', 'koala', 'smith'];
+
+	var CakeSale = React.createClass({displayName: "CakeSale",
+		render: function(){
+			return (
+				React.createElement("div", {onClick: this.props.clickBack}, "sak组件")
+			);
+		}
+	});
+
+	var House = React.createClass({displayName: "House",
+		parentClick: function(){
+			console.log(123);
+		},
+		render: function(){
+			return (
+				React.createElement("div", null, 
+					React.createElement(CakeSale, {ref: "cake", clickBack: this.parentClick})
+				)
+			);
+		}
+	});
+	module.exports.house = House;
 
 
 /***/ }

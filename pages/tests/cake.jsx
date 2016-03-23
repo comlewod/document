@@ -5,27 +5,23 @@ var $ = require('jquery');
 var name_arr = ['comlewod', 'koala', 'smith'];
 
 var CakeSale = React.createClass({
-	getInitialState: function(){
-		return { value: 'comlewod'};
-	},
-	handleClick: function(event){
-		this.setState({
-			//value: event.target.value
-			value: this.refs.text.value //这两种方法都可以实现数据双向绑定
-		});
-	},
 	render: function(){
-		var color = 'red';
 		return (
-		<div>
-			<p style="color: {color}">123</p> 
-			<p style={{color: color}}>123</p>
-		</div>
+			<div onClick={this.props.clickBack}>ssdfsdfsfd组件</div>
 		);
 	}
 });
 
-ReactDom.render(
-	<CakeSale></CakeSale>,
-	document.body
-);
+var House = React.createClass({
+	parentClick: function(){
+		console.log(123);
+	},
+	render: function(){
+		return (
+			<div>
+				<CakeSale ref="cake" clickBack={this.parentClick}></CakeSale>
+			</div>
+		);
+	}
+});
+module.exports.house = House;
