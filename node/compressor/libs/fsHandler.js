@@ -12,13 +12,18 @@ var fsHandler = {
 		//通过gulpFiles里的through模块遍历src目录下的所有文件并输出（同时through模块可以把vinly流转成可读可写流）
 		//这里的function(files)为gulpFiles的参数fn
 		.pipe(gulpFiles(function(files){
-			for(var i=0; i<files.length; i++){
-				if( fs.existsSync(files[i].path) ){
-					//删除文件
-					fs.unlink(files[i].path, function(err){
-						if(err) throw err;
-					});
+			if( files.length ){
+				for(var i=0; i<files.length; i++){
+					if( fs.existsSync(files[i].path) ){
+						//删除文件
+						fs.unlink(files[i].path, function(err){
+							if(err) throw err;
+							if(i >= files.length) callback && callback();
+						});
+					}
 				}
+			} else {
+				callback && callback();
 			}
 		}));
 	}

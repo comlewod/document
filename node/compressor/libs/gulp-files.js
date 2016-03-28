@@ -1,5 +1,5 @@
 /*
- *	gulp对象流转成可读写流	
+ *	gulp对象流转成可读写流，通过through2来遍历符合匹配的所有文件
  */
 var through = require('through2');
 
