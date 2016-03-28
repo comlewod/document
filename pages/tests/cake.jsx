@@ -7,7 +7,7 @@ var name_arr = ['comlewod', 'koala', 'smith'];
 var CakeSale = React.createClass({
 	render: function(){
 		return (
-			<div onClick={this.props.clickBack}>ssdfsdfsfd组件</div>
+			<div onClick={this.props.clickBack}>组件</div>
 		);
 	}
 });
@@ -24,4 +24,4 @@ var House = React.createClass({
 		);
 	}
 });
-module.exports.house = House;
+module.exports = House;

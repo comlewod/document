@@ -6,6 +6,8 @@
     "gulp": "^3.9.1"
   },
   "devDependencies": {
+    "gulp-uglify": "^1.5.3",
+    "through2": "^2.0.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
