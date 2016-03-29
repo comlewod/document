@@ -4,18 +4,19 @@ var batteryWater = function(opts){
 	var self = this;
 	this.opts = $.extend({
 		dom: '',
-		timeScale: [],
-		percentage: 50,
-		minutes: 160,
-		allminutes: 300,
+		timeScale: [],		//时钟刻度
+		num: 50,			//电量百分比
+		minutes: 160,		//所耗时间
 		color: [],
 		speed: 2000,
-		radius: 200
+		consume: true		//true耗电，true充电
 	}, opts)
 
 	this.$dom = this.opts.dom; 
 	this.timeScale = this.opts.timeScale;
 	this.minutes = this.opts.minutes;
+	this.num = this.opts.num;
+	this.consume = this.opts.consume;
 
 	this.canvas = this.$dom.find('canvas');
 	this.width = this.$dom.width();
@@ -37,7 +38,7 @@ var batteryWater = function(opts){
 	};
 
 	//时钟箭头
-	this.drawTip = function(_length, minutes){
+	this.drawTip = function(_length, minutes, a_over, scale_num){
 		var ctx = this.ctx;
 		var radius = 260;
 		var r = 5;			//圆角半径
@@ -45,9 +46,11 @@ var batteryWater = function(opts){
 		var r_height = 20;	//正方体框高度
 		var a_width = 20;	//小箭头宽度
 		var a_height = 6;	//小箭头高度
-
+		
+		//时间框
 		ctx.save();
 		ctx.translate(this.width/2, this.height/2);
+		if( a_over ) ctx.scale(scale_num, scale_num);
 		ctx.rotate(_length);
 		ctx.beginPath();
 		ctx.moveTo(0, -radius);
@@ -65,6 +68,9 @@ var batteryWater = function(opts){
 		//时间变化
 		var hour = Math.floor(minutes/60);
 		var minute = minutes - hour * 60;
+		if( minute < 10 ){
+			minute = '0' + minute;
+		}
 		ctx.font = '10px';
 		ctx.textAlign = 'center';
 		ctx.strokeStyle = '#fff';
@@ -161,15 +167,26 @@ var batteryWater = function(opts){
 	};
 
 	//波浪
-	this.drawWave = function(radius, length, waveAngle, num){
+	this.drawWave = function(radius, now_num, waveAngle, num){
 		var ctx = this.ctx;
-		var _y = radius * Math.cos(length/2);
-		//y为弧长相对应的纵轴长度，
-		var y = radius - _y;
+		var _y = radius * Math.cos(now_num/2);
+		//y为弧长相对应的纵轴长度，即整个高度需要减去的长度
+		//var y = radius - _y;
+		var y = now_num/100 * 2 * radius;
 		
 		//左右两边点的波浪范围
 		var leftHeight = 80 * Math.cos(waveAngle/180 * pi);
 		var rightHeight = 80 * Math.sin(waveAngle/180 * pi);
+		
+		ctx.save();
+		ctx.translate(this.width/2, this.height/2);
+		ctx.beginPath();
+		ctx.font = '20px';
+		ctx.textAlign = 'center';
+		ctx.strokeStyle = 'red';
+		ctx.strokeText(parseInt(100-now_num) + ' %', 0, -50);
+		ctx.closePath();
+		ctx.restore();
 
 		ctx.save();
 		ctx.translate(this.width/2-radius, this.height/2+radius);
@@ -183,12 +200,15 @@ var batteryWater = function(opts){
 		//波浪线1
 		var pointWave = 3; //左上角和右上角纵坐标波动幅度小点，所以除以pointWave
 		ctx.beginPath();
+		var dis_y = -(2*radius - y);
+		
+
 		ctx.moveTo(0, 0);
-		ctx.lineTo(0, -(2*radius - y) + leftHeight / pointWave); 
+		ctx.lineTo(0, dis_y + leftHeight / pointWave); 
 		ctx.bezierCurveTo(
-			radius,	-(2*radius - y) + rightHeight, 
-			1.5*radius, -(2*radius - y) - rightHeight, 
-			2*radius,	-(2*radius - y) + rightHeight / pointWave
+			radius,		dis_y + rightHeight, 
+			1.5*radius, dis_y - rightHeight, 
+			2*radius,	dis_y + rightHeight / pointWave
 		);
 		ctx.lineTo(2*radius, 0);
 		ctx.fillStyle = 'rgba(200, 0, 200, 0.2)';
@@ -198,11 +218,11 @@ var batteryWater = function(opts){
 		//波浪线2
 		ctx.beginPath();
 		ctx.moveTo(0, 0);
-		ctx.lineTo(0, -(2*radius - y) + leftHeight / pointWave);
+		ctx.lineTo(0, dis_y + leftHeight / pointWave);
 		ctx.bezierCurveTo(
-			radius/2,	-(2*radius - y) + rightHeight, 
-			1.2*radius, -(2*radius - y) - rightHeight, 
-			2*radius,	-(2*radius - y) + rightHeight / pointWave
+			radius/2,	dis_y + rightHeight, 
+			1.2*radius, dis_y - rightHeight, 
+			2*radius,	dis_y + rightHeight / pointWave
 		);
 		ctx.lineTo(2*radius, 0);
 		ctx.fillStyle = 'rgba(200, 0, 200, 0.2)';
@@ -213,31 +233,49 @@ var batteryWater = function(opts){
 	};
 
 	var _length = 0;			//弧长
-	var _num = 100;				//百分比
 	var waveAngle_1 = 0;		//波动的起始角
-	var wave_speed = 6;			//波动速度
 	var speed = 0.4;			//百分比增减速度
 	var minutes = 0;			//总共分钟数
+	var wave_speed = 6;			//波动速度
+
+	var now_num = 100;				//百分比
+	var animate_over = false;
+	var scale_num = 1;
+	var scale_speed = 0.01;
 
 	this.run = function(){
-		if( _num > 10 ){
-			_length = (100-_num)/100 * 2 * pi;
-			_num -= speed;
-			waveAngle_1 += wave_speed;
-			minutes++;
-
+		if( minutes <= self.minutes ){
 			self.ctx.clearRect(0, 0, self.width, self.height);
 
 			self.makeCircle(230, 2*pi, '#000', 2);
 			self.makeCircle(210, 2*pi, 'green', 2);
 			self.makeClock(225, self.timeScale);
-			self.drawTip(_length, minutes);
+			self.drawTip(_length, minutes, animate_over, scale_num);
 
-			self.drawWave(210, _length, waveAngle_1);
-			//self.makeWater(210, _num);
+			self.drawWave(210, now_num, waveAngle_1);
+			//self.makeWater(210, now_num);
 			self.makeCircle(210, _length, 'red', 6);
 			self.drawBall(210, _length);
+			
+			if( self.consume ){
+				//_length = (100-now_num)/100 * 2 * pi;
+				//now_num -= speed;
 
+				_length = (2*pi)/self.minutes * minutes;
+				now_num = (100 - self.num)/self.minutes * minutes;
+				minutes++;
+				waveAngle_1 += wave_speed;
+			}
+			//时钟结束
+			if( minutes > self.minutes ) {
+				minutes = self.minutes;
+				animate_over = true;
+				console.log(scale_speed);
+				if( scale_num => 1.3) scale_speed = -scale_speed;
+				if( scale_num < 1) scale_speed = 0;
+				scale_num += scale_speed;
+			}
+			//if( now_num < self.num ) now_num = self.num;
 			self.animation = requestAnimationFrame(self.run);
 		} else {
 			cancelAnimationFrame(this.animation);
@@ -249,5 +287,7 @@ var batteryWater = function(opts){
 var drawWater = new batteryWater({
 	dom: $box,
 	timeScale: ['0:00', '', '1:00', '', '2:00', '', '3:00', '', '4:00', ''],
-	minutes: 220
+	minutes: 300,
+	num: 31,
+	consume: true
 });
