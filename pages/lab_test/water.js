@@ -32,7 +32,11 @@ var batteryWater = function(opts){
 		var ctx = this.ctx;
 		ctx.beginPath();
 		ctx.arc(this.width/2, this.height/2, radius, -pi/2, length-pi/2);
-		ctx.strokeStyle = color;
+		if( color.r ){
+			ctx.strokeStyle = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ',1)';
+		} else {
+			ctx.strokeStyle = color;
+		}
 		ctx.lineWidth = borderWidth;
 		ctx.lineCap = 'round';
 		ctx.stroke();
@@ -63,7 +67,7 @@ var batteryWater = function(opts){
 		ctx.arcTo(-r_width/2, r_height-radius, -r_width/2, r_height-radius-1, r);
 		ctx.arcTo(-r_width/2, -radius, -r_width/2+1, -radius, r);
 		ctx.lineTo(0, -radius);
-		ctx.fillStyle = color;
+		ctx.fillStyle = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 1)';
 		ctx.fill();
 		
 		//时间变化
@@ -91,7 +95,7 @@ var batteryWater = function(opts){
 		
 		ctx.beginPath();
 		ctx.arc(_x, _y, 5, 0, 2*pi);
-		ctx.fillStyle = color;
+		ctx.fillStyle = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 1)';
 		ctx.fill();
 		ctx.closePath();
 
@@ -103,7 +107,7 @@ var batteryWater = function(opts){
 
 		ctx.beginPath();
 		ctx.arc(_x, _y, 2, 0, 2*pi);
-		ctx.fillStyle = color;
+		ctx.fillStyle = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 1)';
 		ctx.fill();
 		ctx.closePath();
 
@@ -154,7 +158,7 @@ var batteryWater = function(opts){
 	};
 
 	//水量
-	this.makeWater = function(radius, num, clock){
+	/*this.makeWater = function(radius, num, clock){
 		var _start = pi * (0.5 - num /100);  	
 		//_start-(-pi/2):开始位置（从0点钟开始, 即-pi/2）到右边流量的弧长，再根据对称算出一半的流量弧长，乘以2后即为整个弧长长度
 		var _end = (pi - (_start + pi/2)) * 2;
@@ -165,10 +169,10 @@ var batteryWater = function(opts){
 		ctx.fillStyle = 'green';
 		ctx.fill();
 		ctx.closePath();
-	};
+	};*/
 
 	//波浪
-	this.drawWave = function(radius, now_num, waveAngle, num, color){
+	this.drawWave = function(radius, now_num, waveAngle, color){
 		var ctx = this.ctx;
 		//y为弧长相对应的纵轴长度，即整个高度需要减去的长度
 		var y = now_num/100 * 2 * radius;
@@ -182,7 +186,7 @@ var batteryWater = function(opts){
 		ctx.beginPath();
 		ctx.font = '20px';
 		ctx.textAlign = 'center';
-		ctx.strokeStyle = color;
+		ctx.strokeStyle = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 1)';
 		ctx.strokeText(parseInt(100-now_num) + ' %', 0, -50);
 		ctx.closePath();
 		ctx.restore();
@@ -210,7 +214,7 @@ var batteryWater = function(opts){
 			2*radius,	dis_y + rightHeight / pointWave
 		);
 		ctx.lineTo(2*radius, 0);
-		ctx.fillStyle = 'rgba(200, 0, 200, 0.2)';
+		ctx.fillStyle = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 0.2)';
 		ctx.fill();
 		ctx.closePath();
 
@@ -224,7 +228,7 @@ var batteryWater = function(opts){
 			2*radius,	dis_y + rightHeight / pointWave
 		);
 		ctx.lineTo(2*radius, 0);
-		ctx.fillStyle = 'rgba(200, 0, 200, 0.2)';
+		ctx.fillStyle = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 0.2)';
 		ctx.fill();
 		ctx.closePath();
 
@@ -239,7 +243,9 @@ var batteryWater = function(opts){
 	var animate_over = false;	//时钟动画是否结束
 	var scale_num = 1;
 	var scale_speed = 0.01;
-	var change_color = 'rgba(68, 190, 6, 1)';
+
+	var now_color = {};
+	//var change_color = 'rgba(68, 190, 6, 1)';
 	//change_color = 'rgba(255, 196, 17, 1)';
 	//change_color = 'rgba(248, 97, 23, 1)';
 	var green = {
@@ -266,21 +272,28 @@ var batteryWater = function(opts){
 			self.ctx.clearRect(0, 0, self.width, self.height);
 
 			self.makeCircle(149, 2*pi, self.color.gray, 1);
-			self.makeCircle(138, 2*pi, change_color, 1);
+			self.makeCircle(138, 2*pi, now_color, 1);
 			self.makeClock(145, self.timeScale, self.color.gray);
-			self.drawTip(180, _length, minutes, animate_over, scale_num, change_color);
+			self.drawTip(180, _length, minutes, animate_over, scale_num, now_color);
 
-			self.drawWave(138, now_num, waveAngle_1, change_color);
+			self.drawWave(138, now_num, waveAngle_1, now_color);
 			//self.makeWater(210, now_num);
-			self.makeCircle(138, _length, change_color, 3);
-			self.drawBall(138, _length, change_color);
+			self.makeCircle(138, _length, now_color, 3);
+			self.drawBall(138, _length, now_color);
+
+			if( now_num <= 30 ){
+				now_color = green;
+			} else if( now_num > 30 && now_num <= 35 ){
+			} else if( now_num > 35 && now_num <= 65 ){
+				now_color = yellow;
+			} else if( now_num > 65 && now_num <= 70 ) {
+			} else if( now_num > 70 && now_num <= 100 ){
+				now_color = red;
+			}
 			
 			if( self.consume ){
 				now_num = (100 - self.num)/self.minutes * minutes;
-				if( now_num < 35 ){
-				} else if( now_num > 34 && now_num < 68 ) {
-				} else if( now_num > 67 && now_num < 101 ) {
-				}
+				
 			} else {
 				now_num = 100 - (100/self.minutes) * minutes;
 			}
@@ -321,5 +334,5 @@ var drawWater = new batteryWater({
 	minutes: 240,
 	allMinutes: 300,
 	num: 10,
-	consume: true  
+	consume: true 
 });
