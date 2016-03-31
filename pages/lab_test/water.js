@@ -244,28 +244,58 @@ var batteryWater = function(opts){
 	var scale_num = 1;
 	var scale_speed = 0.01;
 
-	var now_color = {};
-	//var change_color = 'rgba(68, 190, 6, 1)';
-	//change_color = 'rgba(255, 196, 17, 1)';
-	//change_color = 'rgba(248, 97, 23, 1)';
+	//颜色渐变计算
 	var green = {
 		r: 68,
 		g: 190,
 		b: 6
 	};
 	var yellow = {
-		r: 255,
-		g: 196,
-		b: 17
+		r: 178,
+		g: 213,
+		b: 54 
 	};
 	var red = {
-		r: 248,
-		g: 97,
-		b: 23
+		r: 242,
+		g: 107,
+		b: 26 
 	};
-	var g2y_r = (yellow.r - green.r)/(68 - 0);
-	var g2y_g = (yellow.g - green.g)/(68 - 35);
-	var g2y_b = (yellow.b - green.b)/(68 - 35);
+	var g2y = {};//绿——黄
+	var y2r = {};//黄——红
+	var split = 70;//中间渐变的分割点
+	var firstTime = 0;//从0点开始完成第一次渐变（变成黄色）所需的时间
+
+	if( this.consume ) {
+		var now_color = green;//当前颜色
+		firstTime = this.allMinutes * split/100;
+
+		g2y.each_split = split/firstTime;
+		//r、g、b值在该部分渐变时间内的速度
+		g2y.r = (yellow.r - green.r) / split;
+		g2y.g = (yellow.g - green.g) / split;
+		g2y.b = (yellow.b - green.b) / split;
+
+		y2r.each_split = (100-split) / (this.allMinutes - firstTime);
+		y2r.r = (red.r - yellow.r) / (100 - split);
+		y2r.g = (red.g - yellow.g) / (100 - split);
+		y2r.b = (red.b - yellow.b) / (100 - split);
+
+	} else {
+		split = 100 - split;
+		firstTime = this.allMinutes * split/100;
+		var now_color = red;
+
+		y2r.each_split = split / firstTime;
+		y2r.r = (red.r - yellow.r) / split;
+		y2r.g = (red.g - yellow.g) / split;
+		y2r.b = (red.b - yellow.b) / split;
+
+		var firstTime = this.allMinutes * split/100;
+		g2y.each_split = split/(this.allMinutes - firstTime);
+		g2y.r = (yellow.r - green.r) / (100 - split);
+		g2y.g = (yellow.g - green.g) / (100 - split);
+		g2y.b = (yellow.b - green.b) / (100 - split);
+	}
 
 	this.run = function(){
 		if( minutes <= self.minutes ){
@@ -281,24 +311,45 @@ var batteryWater = function(opts){
 			self.makeCircle(138, _length, now_color, 3);
 			self.drawBall(138, _length, now_color);
 
-			if( now_num <= 30 ){
-				now_color = green;
-			} else if( now_num > 30 && now_num <= 35 ){
-			} else if( now_num > 35 && now_num <= 65 ){
-				now_color = yellow;
-			} else if( now_num > 65 && now_num <= 70 ) {
-			} else if( now_num > 70 && now_num <= 100 ){
-				now_color = red;
+			if( minutes <= firstTime){
+				if( self.consume ){
+					now_color = {
+						r: parseInt(green.r + minutes * g2y.r * g2y.each_split),
+						g: parseInt(green.g + minutes * g2y.g * g2y.each_split),
+						b: parseInt(green.b + minutes * g2y.b * g2y.each_split)
+					};
+				} else {
+					now_color = {
+						r: parseInt(red.r - minutes * y2r.r * y2r.each_split),
+						g: parseInt(red.g - minutes * y2r.g * y2r.each_split),
+						b: parseInt(red.b - minutes * y2r.b * y2r.each_split)
+					};
+				}
+			} else if( minutes > firstTime && minutes < self.allMinutes ){
+				var nowTime = minutes - firstTime;
+				if( self.consume ){
+					now_color = {
+						r: parseInt(yellow.r + nowTime * y2r.r * y2r.each_split),
+						g: parseInt(yellow.g + nowTime * y2r.g * y2r.each_split),
+						b: parseInt(yellow.b + nowTime * y2r.b * y2r.each_split)
+					};
+				} else {
+					now_color = {
+						r: parseInt(yellow.r - nowTime * g2y.r * g2y.each_split),
+						g: parseInt(yellow.g - nowTime * g2y.g * g2y.each_split),
+						b: parseInt(yellow.b - nowTime * g2y.b * g2y.each_split)
+					};
+				}
 			}
 			
 			if( self.consume ){
+				//从 100 到 self.num
 				now_num = (100 - self.num)/self.minutes * minutes;
 				
 			} else {
+				//从 0 到 100
 				now_num = 100 - (100/self.minutes) * minutes;
 			}
-
-			
 
 			_length = (self.minutes/self.allMinutes * 2*pi)/self.minutes * minutes;
 			waveAngle_1 += wave_speed;
@@ -331,7 +382,7 @@ var drawWater = new batteryWater({
 		red:	'#f86117',
 		gray:	'#b3b3b3'
 	},
-	minutes: 240,
+	minutes: 300,
 	allMinutes: 300,
 	num: 10,
 	consume: true 
