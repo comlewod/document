@@ -36,6 +36,7 @@ var batteryWater = function(opts){
 
 	this.$dom = this.opts.dom; 
 	this.content = this.opts.content;
+	this.timeScale = this.opts.timeScale;
 	this.color = this.opts.color;
 
 	this.canvas = this.$dom.find('canvas');
@@ -44,56 +45,173 @@ var batteryWater = function(opts){
 	this.ctx = this.canvas.get(0).getContext('2d');
 
 	var pi = Math.PI;
+	var o_x = 30.5; //原点坐标
+	var o_y = 185.5;
 	var scale_width = 700;
-	var scale_height = 25;
-	var point_radius = 2.5;
+	var each_width = parseInt(scale_width/(2 * this.timeScale.length));
+	var each_height = 25;
+	var scale_height = each_height * 6;
+	var point_radius = 2.5; //小点半径
+	var o_temp = 25; //原点坐标的起始温度
+	var y_height = 0; //每个点在动画过程中的纵坐标
+	var arr_pos = []; //存储每个点的坐标
 
 	this.makeScale = function(){
 		var ctx = this.ctx;
 		ctx.save();
-		ctx.translate(30.5, 185.5);
+		ctx.translate(o_x, o_y);
+		//温度数字
 		ctx.beginPath();
-		
 		ctx.font = '10px';
 		ctx.strokeStyle = self.color.gray;
 		ctx.textBaseline = 'middle';
 		ctx.textAlign = 'right';
-		ctx.strokeText(25, -10, 0);
+		ctx.strokeText(o_temp, -10, 0);
+		ctx.closePath();
 
+		//温度横线
+		ctx.beginPath();
 		for( var i=1; i<7; i++){
-			ctx.strokeText(25 + 5 * i , -10, -i * scale_height);
-			ctx.moveTo(0, -i * scale_height);
-			ctx.lineTo(scale_width, -i * scale_height);
+			ctx.strokeText(o_temp + 5 * i , -10, -i * each_height);
+			ctx.moveTo(0, -i * each_height);
+			ctx.lineTo(scale_width, -i * each_height);
 		}
-
 		ctx.lineWidth = 1;
 		ctx.strokeStyle = self.color.l_gray;
 		ctx.stroke();
 		ctx.closePath();
+
+		ctx.restore();
+	};
+
+	this.drawTemp = function(y_height){
+		var ctx = this.ctx;
+		ctx.save();
+		ctx.translate(o_x, o_y);
+		for(var i=0; i<self.content.length; i++){
+			var temp_x = i * each_width;
+			var ny = self.content[i].values - o_temp;
+			var temp_y = -ny * 5 * y_height;
+			if( i != self.content.length - 1 ){
+				var nny = self.content[i+1].values - o_temp;
+				var temp_ny = -nny * 5 * y_height;
+			}
+			if( y_height >= 1 ){
+				arr_pos.push({x: temp_x, y: temp_y});
+			}
+
+			//温度区间块
+			ctx.beginPath();
+			ctx.moveTo( temp_x, 0);
+			ctx.lineTo( temp_x, temp_y);
+			ctx.lineTo( (i+1) * each_width, temp_ny);
+			ctx.lineTo( (i+1) * each_width, 0);
+			ctx.lineTo( temp_x, 0);
+			ctx.fillStyle = 'rgba(89, 103, 107, 0.05';
+			ctx.fill();
+			ctx.closePath();
+			//竖线
+			ctx.beginPath();
+			ctx.moveTo(temp_x, 0);
+			ctx.lineTo(temp_x, temp_y);
+			ctx.strokeStyle = self.color.l_gray;
+			ctx.lineWidth = 1;
+			ctx.stroke();
+			ctx.closePath();
+			//点与点之间的连线(除了最后一个点);
+			if( i != self.content.length - 1 ){
+				ctx.beginPath();
+				ctx.moveTo(temp_x, temp_y);
+				ctx.lineTo( (i+1) * each_width,  temp_ny);
+				ctx.strokeStyle = self.color.black;
+				ctx.lineWidth = 1;
+				ctx.stroke();
+				ctx.closePath();
+			}
+			//温度圆点的白色底
+			ctx.beginPath();
+			ctx.arc(temp_x, temp_y, point_radius-0.5, 0, 2*pi);
+			ctx.fillStyle = '#fff';
+			ctx.fill();
+			ctx.closePath();
+			//温度圆点
+			ctx.beginPath();
+			ctx.arc(temp_x, temp_y, point_radius-0.5, 0, 2*pi);
+			ctx.strokeStyle = self.color.black;
+			ctx.stroke();
+			ctx.closePath();
+
+		}
+		ctx.restore();
+	};
+
+	this.makeOy = function(){
+		var ctx = this.ctx;
+		ctx.save();
+		ctx.translate(o_x, o_y);
+
 		ctx.beginPath();
 		ctx.moveTo(0, 0);
 		ctx.lineTo(scale_width, 0);
 		ctx.strokeStyle = self.color.black;
 		ctx.stroke();
+		ctx.closePath();
 
-		ctx.arc(0, 0, point_radius, 0, 2*pi);
-		ctx.fillStyle = self.color.black;
+		ctx.beginPath();
+		for(var j=0; j<2 * this.timeScale.length + 1; j+=2){
+			ctx.arc(j * each_width, 0, point_radius, 0, 2*pi);
+			ctx.fillStyle = self.color.black;
+		}
 		ctx.fill();
+		ctx.closePath();
 
+		ctx.restore();
+	};
+	//鼠标悬浮
+	this.makeHover = function(pos){
+		var ctx = this.ctx;
+		ctx.save();
+		ctx.translate(o_x, o_y);
+		ctx.beginPath();
+		ctx.arc(pos.x, pos.y, point_radius, 0, 2*pi);
+		ctx.strokeStyle = self.color.blue;
+		ctx.stroke();
 		ctx.closePath();
 		ctx.restore();
 	};
 
 	this.run = function(){
-		this.makeScale();
+		if( y_height <  100 ){
+			y_height += 2;
+			self.ctx.clearRect(0, 0, self.width, self.height);
+			self.makeScale();
+			self.drawTemp(y_height/100);
+			self.makeOy();
+			self.animation = requestAnimationFrame(self.run);
+		} else {
+			cancelAnimationFrame(this.animation);
+		}
 	};
+	this.animation = requestAnimationFrame(this.run);
 
-	this.run();
+	this.canvas.on('mousemove', function(ev){
+		var mouse = F.getMousePos(ev, $(this));
+		//相对于原点的坐标轴位置
+		var pos = { x: mouse.x - o_x, y: mouse.y - o_y };
+		var now_one = Math.ceil( (pos.x - each_width/2) / each_width);
+		if( pos.x > 0 && pos.y < 0 ){
+			self.ctx.clearRect(0, 0, self.width, self.height);
+			self.makeScale();
+			self.drawTemp(1);
+			self.makeOy();
+			self.makeHover(arr_pos[now_one]);
+		}
+	});
 };
 
 var drawWater = new batteryWater({
 	dom: $box,
-	timeScale: ['网络视频', '本地视频‘， ’电子书', '微博', '拍照', '游戏', '微信', '网页', '通话', '音乐'],
+	timeScale: ['网络视频', '本地视频','电子书', '微博', '拍照', '游戏', '微信', '网页', '通话', '音乐'],
 	content: [
 		{name: '起始点亮', values: '29.20'},
 		{name: '网络视频1', values: '33.30'},
@@ -109,13 +227,13 @@ var drawWater = new batteryWater({
 		{name: '游戏1', values: '38.50'},
 		{name: '游戏2', values: '38.00'},
 		{name: '微信1', values: '35.60'},
-		{name: '微信2', values: '34.20'},
-		{name: '网页1', values: '33.20'},
+		{name: '微信2', values: '40.00'},
+		{name: '网页1', values: '40.00'},
 		{name: '网页2', values: '33.20'},
 		{name: '通话1', values: '29.50'},
 		{name: '通话2', values: '29.60'},
-		{name: '音乐1', values: '29.80'},
-		{name: '音乐2', values: '29.80'},
+		{name: '音乐1', values: '37.00'},
+		{name: '音乐2', values: '37.00'},
 	],
 	color: {
 		blue:	'#0096ff',

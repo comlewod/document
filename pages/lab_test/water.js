@@ -382,8 +382,8 @@ var drawWater = new batteryWater({
 		red:	'#f86117',
 		gray:	'#b3b3b3'
 	},
-	minutes: 300,
+	minutes: 210,
 	allMinutes: 300,
 	num: 10,
-	consume: true 
+	consume: false 
 });
