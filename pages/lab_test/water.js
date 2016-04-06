@@ -262,12 +262,12 @@ var batteryWater = function(opts){
 	var firstTime = 0;//从0点开始完成第一次渐变（变成黄色）所需的时间
 
 	if( this.consume ) {
-		var now_color = green;//当前颜色
-		var	now_num = 0;			//目前已经消耗的百分比，即100-液体剩余的百分比
+		var now_color = green; //当前颜色
+		var	now_num = 0; //目前已经消耗的百分比，即100-液体剩余的百分比
 		firstTime = this.allMinutes * split/100;
 	} else {
-		var now_color = red;//当前颜色
-		var	now_num = 100;			//目前已经消耗的百分比，即100-液体剩余的百分比
+		var now_color = red; //当前颜色
+		var	now_num = 100; //目前已经消耗的百分比，即100-液体剩余的百分比
 		firstTime = this.allMinutes * r_split/100;
 	}
 	//r、g、b值在该部分渐变时间内的速度
@@ -292,45 +292,26 @@ var batteryWater = function(opts){
 			//self.makeWater(210, now_num);
 			self.makeCircle(138, _length, now_color, 3);
 			self.drawBall(138, _length, now_color);
-			
-			//消耗
-			if( self.consume ){
-				//now_num 从0到self.num
-				if( now_num <= split ){
-					now_color = {
-						r: parseInt(green.r + g2y.r * now_num),
-						g: parseInt(green.g + g2y.g * now_num),
-						b: parseInt(green.b + g2y.b * now_num)
-					};
-				} else if( now_num > split && now_num <= 100 ){
-					var o_num = now_num - split;
-					now_color = {
-						r: parseInt(yellow.r + y2r.r * o_num),
-						g: parseInt(yellow.g + y2r.g * o_num),
-						b: parseInt(yellow.b + y2r.b * o_num)
-					};
-				}
-				now_num = (100 - self.num)/self.minutes * minutes;
 
-			//充电
-			} else {
-				//now_num 从100到0
-				if( now_num >= split ){
-					var o_num = now_num - split;
-					now_color = {
-						r: parseInt(yellow.r + y2r.r * o_num),
-						g: parseInt(yellow.g + y2r.g * o_num),
-						b: parseInt(yellow.b + y2r.b * o_num)
-					};
-				} else if( now_num < split && now_num >= 0 ){
-					now_color = {
-						r: parseInt(green.r + g2y.r * now_num),
-						g: parseInt(green.g + g2y.g * now_num),
-						b: parseInt(green.b + g2y.b * now_num)
-					};
-				}
-				now_num = 100 - (100/self.minutes) * minutes;
+			if( now_num <= split ){
+				now_color = {
+					r: parseInt(green.r + g2y.r * now_num),
+					g: parseInt(green.g + g2y.g * now_num),
+					b: parseInt(green.b + g2y.b * now_num)
+				};
+			} else if( now_num > split && now_num <= 100 ){
+				var o_num = now_num - split;
+				now_color = {
+					r: parseInt(yellow.r + y2r.r * o_num),
+					g: parseInt(yellow.g + y2r.g * o_num),
+					b: parseInt(yellow.b + y2r.b * o_num)
+				};
 			}
+			
+			//消耗 now_num 从0到self.num
+			if( self.consume ) now_num = (100 - self.num)/self.minutes * minutes;
+			//充电 now_num 从100到0
+			else now_num = 100 - (100/self.minutes) * minutes;
 
 			_length = (self.minutes/self.allMinutes * 2*pi)/self.minutes * minutes;
 			waveAngle += wave_speed;
@@ -371,6 +352,6 @@ var drawWater = new batteryWater({
 	},
 	minutes: 220,
 	allMinutes: 300,
-	num: 30,
-	consume: true 
+	num: 0,
+	consume: false 
 });
