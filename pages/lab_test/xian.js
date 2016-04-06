@@ -97,7 +97,7 @@ var batteryWater = function(opts){
 				var temp_ny = -nny * 5 * y_height;
 			}
 			if( y_height >= 1 ){
-				arr_pos.push({x: temp_x, y: temp_y});
+				arr_pos.push({x: temp_x, y: temp_y, values: self.content[i].values});
 			}
 
 			//温度区间块
@@ -173,9 +173,51 @@ var batteryWater = function(opts){
 		ctx.save();
 		ctx.translate(o_x, o_y);
 		ctx.beginPath();
-		ctx.arc(pos.x, pos.y, point_radius, 0, 2*pi);
+		ctx.arc(pos.x, pos.y, point_radius+0.5, 0, 2*pi);
+		ctx.fillStyle = '#fff';
+		ctx.fill();
+		ctx.closePath();
+
+		ctx.beginPath();
+		ctx.arc(pos.x, pos.y, point_radius+0.5, 0, 2*pi);
 		ctx.strokeStyle = self.color.blue;
 		ctx.stroke();
+		ctx.closePath();
+		
+		ctx.beginPath();
+		ctx.arc(pos.x, pos.y, 1.5, 0, 2*pi);
+		ctx.fillStyle = self.color.blue;
+		ctx.fill();
+		ctx.closePath();
+
+		var r = 2;			//圆角半径
+		var r_width = 36;	//正方体框宽度 
+		var r_height = 16;	//正方体框高度
+		var a_width = 7;	//小箭头宽度
+		var a_height = 3;	//小箭头高度
+		var radius = 10;
+		
+		//温度数字框
+		ctx.beginPath();
+		var a_x = Math.floor(pos.x) - 0.5;
+		var a_y = Math.floor(pos.y) - 25.5;
+		ctx.moveTo(a_x, a_y);
+		ctx.arcTo(r_width/2 + a_x, a_y, r_width/2 + a_x, 1 - a_y, r);
+		ctx.arcTo(r_width/2 + a_x, r_height + a_y, r_width/2 + a_x - 1, r_height + a_y, r);
+		ctx.lineTo( a_width/2 + a_x, r_height + a_y);
+		ctx.lineTo( a_x, r_height + a_height + a_y);
+		ctx.lineTo( a_x - a_width/2, r_height + a_y);
+		ctx.arcTo(a_x - r_width/2, r_height + a_y, a_x - r_width/2, r_height + a_y - 1, r);
+		ctx.arcTo(a_x - r_width/2, a_y, a_x - r_width/2 + 1, a_y, r);
+		ctx.lineTo(a_x, a_y);
+		ctx.fillStyle = self.color.blue;
+		ctx.fill();
+
+		ctx.font = '10px';
+		ctx.textAlign = 'center';
+		ctx.strokeStyle = '#fff';
+		ctx.strokeText(pos.values, a_x, Math.floor(pos.y) - 13);
+
 		ctx.closePath();
 		ctx.restore();
 	};
