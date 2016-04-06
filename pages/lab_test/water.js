@@ -172,14 +172,14 @@ var batteryWater = function(opts){
 	};*/
 
 	//波浪
-	this.drawWave = function(radius, now_num, waveAngle, color){
+	this.drawWave = function(radius, nowNum, waveAngle, color, waveHeight){
 		var ctx = this.ctx;
 		//y为弧长相对应的纵轴长度，即整个高度需要减去的长度
-		var y = now_num/100 * 2 * radius;
+		var y = nowNum/100 * 2 * radius;
 		
 		//左右两边点的波浪范围
-		var leftHeight = 80 * Math.cos(waveAngle/180 * pi);
-		var rightHeight = 80 * Math.sin(waveAngle/180 * pi);
+		var leftHeight = waveHeight * Math.cos(waveAngle/180 * pi);
+		var rightHeight = waveHeight * Math.sin(waveAngle/180 * pi);
 		
 		ctx.save();
 		ctx.translate(this.width/2, this.height/2);
@@ -187,7 +187,7 @@ var batteryWater = function(opts){
 		ctx.font = '20px';
 		ctx.textAlign = 'center';
 		ctx.strokeStyle = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 1)';
-		ctx.strokeText(parseInt(100-now_num) + ' %', 0, -50);
+		ctx.strokeText(parseInt(100-nowNum) + ' %', 0, -50);
 		ctx.closePath();
 		ctx.restore();
 
@@ -201,17 +201,16 @@ var batteryWater = function(opts){
 		ctx.closePath();
 
 		//波浪线1
-		var pointWave = 3; //左上角和右上角纵坐标波动幅度小点，所以除以pointWave
+		var pointWave = 1; //左上角和右上角纵坐标波动幅度小点，所以除以pointWave
 		ctx.beginPath();
 		var dis_y = -(2*radius - y);
-		
 
 		ctx.moveTo(0, 0);
-		ctx.lineTo(0, dis_y + leftHeight / pointWave); 
+		ctx.lineTo(0, dis_y); 
 		ctx.bezierCurveTo(
-			radius,		dis_y + rightHeight, 
-			1.5*radius, dis_y - rightHeight, 
-			2*radius,	dis_y + rightHeight / pointWave
+			0.7,		dis_y + leftHeight / pointWave,
+			1.4*radius, dis_y + rightHeight / pointWave, 
+			2*radius,	dis_y
 		);
 		ctx.lineTo(2*radius, 0);
 		ctx.fillStyle = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 0.2)';
@@ -221,12 +220,8 @@ var batteryWater = function(opts){
 		//波浪线2
 		ctx.beginPath();
 		ctx.moveTo(0, 0);
-		ctx.lineTo(0, dis_y + leftHeight / pointWave);
-		ctx.bezierCurveTo(
-			radius/2,	dis_y + rightHeight, 
-			1.2*radius, dis_y - rightHeight, 
-			2*radius,	dis_y + rightHeight / pointWave
-		);
+		ctx.lineTo(0, dis_y);
+		ctx.quadraticCurveTo(radius, dis_y+leftHeight, 2*radius, dis_y);
 		ctx.lineTo(2*radius, 0);
 		ctx.fillStyle = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 0.2)';
 		ctx.fill();
@@ -236,10 +231,10 @@ var batteryWater = function(opts){
 	};
 
 	var _length = 0;			//弧长
-	var waveAngle_1 = 0;		//波动的起始角
+	var waveAngle = 0;		//波动的起始角
 	var minutes = 0;			//目前所耗分钟数
-	var wave_speed = 6;			//波动速度
-	var	now_num = 0;			//目前已经消耗的百分比
+	var wave_speed = 2;			//波动速度
+	var wave_height = 40;
 	var animate_over = false;	//时钟动画是否结束
 	var scale_num = 1;
 	var scale_speed = 0.01;
@@ -263,39 +258,26 @@ var batteryWater = function(opts){
 	var g2y = {};//绿——黄
 	var y2r = {};//黄——红
 	var split = 70;//中间渐变的分割点
+	var r_split = 100 - split;
 	var firstTime = 0;//从0点开始完成第一次渐变（变成黄色）所需的时间
 
 	if( this.consume ) {
 		var now_color = green;//当前颜色
+		var	now_num = 0;			//目前已经消耗的百分比，即100-液体剩余的百分比
 		firstTime = this.allMinutes * split/100;
-
-		g2y.each_split = split/firstTime;
-		//r、g、b值在该部分渐变时间内的速度
-		g2y.r = (yellow.r - green.r) / split;
-		g2y.g = (yellow.g - green.g) / split;
-		g2y.b = (yellow.b - green.b) / split;
-
-		y2r.each_split = (100-split) / (this.allMinutes - firstTime);
-		y2r.r = (red.r - yellow.r) / (100 - split);
-		y2r.g = (red.g - yellow.g) / (100 - split);
-		y2r.b = (red.b - yellow.b) / (100 - split);
-
 	} else {
-		split = 100 - split;
-		firstTime = this.allMinutes * split/100;
-		var now_color = red;
-
-		y2r.each_split = split / firstTime;
-		y2r.r = (red.r - yellow.r) / split;
-		y2r.g = (red.g - yellow.g) / split;
-		y2r.b = (red.b - yellow.b) / split;
-
-		var firstTime = this.allMinutes * split/100;
-		g2y.each_split = split/(this.allMinutes - firstTime);
-		g2y.r = (yellow.r - green.r) / (100 - split);
-		g2y.g = (yellow.g - green.g) / (100 - split);
-		g2y.b = (yellow.b - green.b) / (100 - split);
+		var now_color = red;//当前颜色
+		var	now_num = 100;			//目前已经消耗的百分比，即100-液体剩余的百分比
+		firstTime = this.allMinutes * r_split/100;
 	}
+	//r、g、b值在该部分渐变时间内的速度
+	g2y.r = (yellow.r - green.r) / split;
+	g2y.g = (yellow.g - green.g) / split;
+	g2y.b = (yellow.b - green.b) / split;
+
+	y2r.r = (red.r - yellow.r) / r_split;
+	y2r.g = (red.g - yellow.g) / r_split;
+	y2r.b = (red.b - yellow.b) / r_split;
 
 	this.run = function(){
 		if( minutes <= self.minutes ){
@@ -306,62 +288,67 @@ var batteryWater = function(opts){
 			self.makeClock(145, self.timeScale, self.color.gray);
 			self.drawTip(180, _length, minutes, animate_over, scale_num, now_color);
 
-			self.drawWave(138, now_num, waveAngle_1, now_color);
+			self.drawWave(138, now_num, waveAngle, now_color, wave_height);
 			//self.makeWater(210, now_num);
 			self.makeCircle(138, _length, now_color, 3);
 			self.drawBall(138, _length, now_color);
-
-			if( minutes <= firstTime){
-				if( self.consume ){
-					now_color = {
-						r: parseInt(green.r + minutes * g2y.r * g2y.each_split),
-						g: parseInt(green.g + minutes * g2y.g * g2y.each_split),
-						b: parseInt(green.b + minutes * g2y.b * g2y.each_split)
-					};
-				} else {
-					now_color = {
-						r: parseInt(red.r - minutes * y2r.r * y2r.each_split),
-						g: parseInt(red.g - minutes * y2r.g * y2r.each_split),
-						b: parseInt(red.b - minutes * y2r.b * y2r.each_split)
-					};
-				}
-			} else if( minutes > firstTime && minutes < self.allMinutes ){
-				var nowTime = minutes - firstTime;
-				if( self.consume ){
-					now_color = {
-						r: parseInt(yellow.r + nowTime * y2r.r * y2r.each_split),
-						g: parseInt(yellow.g + nowTime * y2r.g * y2r.each_split),
-						b: parseInt(yellow.b + nowTime * y2r.b * y2r.each_split)
-					};
-				} else {
-					now_color = {
-						r: parseInt(yellow.r - nowTime * g2y.r * g2y.each_split),
-						g: parseInt(yellow.g - nowTime * g2y.g * g2y.each_split),
-						b: parseInt(yellow.b - nowTime * g2y.b * g2y.each_split)
-					};
-				}
-			}
 			
+			//消耗
 			if( self.consume ){
-				//从 100 到 self.num
+				//now_num 从0到self.num
+				if( now_num <= split ){
+					now_color = {
+						r: parseInt(green.r + g2y.r * now_num),
+						g: parseInt(green.g + g2y.g * now_num),
+						b: parseInt(green.b + g2y.b * now_num)
+					};
+				} else if( now_num > split && now_num <= 100 ){
+					var o_num = now_num - split;
+					now_color = {
+						r: parseInt(yellow.r + y2r.r * o_num),
+						g: parseInt(yellow.g + y2r.g * o_num),
+						b: parseInt(yellow.b + y2r.b * o_num)
+					};
+				}
 				now_num = (100 - self.num)/self.minutes * minutes;
-				
+
+			//充电
 			} else {
-				//从 0 到 100
+				//now_num 从100到0
+				if( now_num >= split ){
+					var o_num = now_num - split;
+					now_color = {
+						r: parseInt(yellow.r + y2r.r * o_num),
+						g: parseInt(yellow.g + y2r.g * o_num),
+						b: parseInt(yellow.b + y2r.b * o_num)
+					};
+				} else if( now_num < split && now_num >= 0 ){
+					now_color = {
+						r: parseInt(green.r + g2y.r * now_num),
+						g: parseInt(green.g + g2y.g * now_num),
+						b: parseInt(green.b + g2y.b * now_num)
+					};
+				}
 				now_num = 100 - (100/self.minutes) * minutes;
 			}
 
 			_length = (self.minutes/self.allMinutes * 2*pi)/self.minutes * minutes;
-			waveAngle_1 += wave_speed;
+			waveAngle += wave_speed;
 			minutes++;
 
 			//时钟结束
 			if( minutes >= self.minutes ) {
 				minutes = self.minutes;
 				animate_over = true;
-				//if( scale_num => 1.3) scale_speed = -scale_speed;
-				//if( scale_num < 1) scale_speed = 0;
-				//scale_num += scale_speed;
+
+				if( scale_num >= 1.1) scale_speed = -scale_speed;
+				if( scale_num < 1) scale_speed = 0;
+				scale_num += scale_speed;
+
+				if( !self.consume ){
+					if( wave_height ) wave_height--;
+					else wave_height = 0;
+				}
 			}
 
 			self.animation = requestAnimationFrame(self.run);
@@ -382,8 +369,8 @@ var drawWater = new batteryWater({
 		red:	'#f86117',
 		gray:	'#b3b3b3'
 	},
-	minutes: 210,
+	minutes: 220,
 	allMinutes: 300,
-	num: 10,
-	consume: false 
+	num: 30,
+	consume: true 
 });

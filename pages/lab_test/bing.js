@@ -185,10 +185,12 @@ var batteryWater = function(opts){
 	
 	var radius = 200;
 	var height = 20;
+	var hover_height = height + 8;
+	var catch_obj = null;
 
 	this.run = function(angle){
+		catch_obj = null;
 		//判断鼠标在哪个区域
-		var catch_obj = null;
 		$.each(arr_content, function(index, item){
 			if( angle && angle >= item.start && angle <= item.end && item.index != arr_content.length - 1 ){
 				catch_obj = item;
@@ -201,7 +203,7 @@ var batteryWater = function(opts){
 		//画出hover的部分
 		if( catch_obj ){
 			self.makeBlock(radius, catch_obj, height+8, true);
-			self.makeCircle(radius-height-8);
+			self.makeCircle(radius-hover_height);
 		}
 	};
 	this.run();
@@ -221,8 +223,11 @@ var batteryWater = function(opts){
 
 		//鼠标距离中心店的距离
 		var length = Math.abs(pos.y / Math.sin(angle));
+		//judge_height，当鼠标hover时，判断鼠标离开的区域为hover块的区域
+		var judge_height = height;
+		if( catch_obj ) judge_height = hover_height;
 
-		if( length >= radius - height && length <= radius ){
+		if( length >= radius - judge_height && length <= radius ){
 			$(this).css('cursor', 'pointer');
 			self.ctx.clearRect(0, 0, self.width, self.height);
 			self.run(angle);
