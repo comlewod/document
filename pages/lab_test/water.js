@@ -76,10 +76,10 @@ var batteryWater = function(opts){
 		if( minute < 10 ){
 			minute = '0' + minute;
 		}
-		ctx.font = '10px';
+		ctx.font = '12px Arial';
 		ctx.textAlign = 'center';
-		ctx.strokeStyle = '#fff';
-		ctx.strokeText(hour + ':' + minute, 0, 15-radius);
+		ctx.fillStyle = '#fff';
+		ctx.fillText(hour + ':' + minute, 0, 15-radius);
 
 		ctx.closePath();
 
@@ -143,9 +143,10 @@ var batteryWater = function(opts){
 				y = Math.cos(now_length) * (radius + 20);
 				ctx.translate(x, -y);
 				ctx.rotate(now_length);
-				ctx.font = 'lighter 10px';
+				ctx.font = '12px Arial';
 				ctx.textAlign = 'center';
-				ctx.strokeText(arr[i], 0, 12);
+				ctx.fillStyle = color;
+				ctx.fillText(arr[i], 0, 12);
 				ctx.restore();
 			}
 		}
@@ -184,10 +185,12 @@ var batteryWater = function(opts){
 		ctx.save();
 		ctx.translate(this.width/2, this.height/2);
 		ctx.beginPath();
-		ctx.font = '20px';
+
+		//百分比
+		ctx.font = '40px Arial';
 		ctx.textAlign = 'center';
-		ctx.strokeStyle = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 1)';
-		ctx.strokeText(parseInt(100-nowNum) + ' %', 0, -50);
+		ctx.fillStyle = 'rgba(' + color.r + ',' + color.g + ',' + color.b + ', 1)';
+		ctx.fillText(parseInt(100-nowNum) + '%', 0, -40);
 		ctx.closePath();
 		ctx.restore();
 
@@ -352,6 +355,6 @@ var drawWater = new batteryWater({
 	},
 	minutes: 220,
 	allMinutes: 300,
-	num: 0,
+	num: 20,
 	consume: false 
 });

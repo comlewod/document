@@ -37,6 +37,7 @@ var batteryWater = function(opts){
 	this.$dom = this.opts.dom; 
 	this.content = this.opts.content;
 	this.color = this.opts.color;
+	this.text_color = this.opts.text_color;
 
 	this.canvas = this.$dom.find('canvas');
 	this.width = this.$dom.width();
@@ -84,7 +85,7 @@ var batteryWater = function(opts){
 	this.makeBlock = function(radius, item, height, hover){
 		var ctx = this.ctx;
 		var w_width = 1/180 * pi;
-		var w_radius = 210;
+		var w_radius = 119;
 		ctx.save();
 		ctx.translate(this.width/2, this.height/2);
 
@@ -96,21 +97,28 @@ var batteryWater = function(opts){
 			ctx.moveTo( w_radius * Math.cos(item.middle), w_radius * Math.sin(item.middle));
 			ctx.lineTo( w_x, w_y);
 			
+			//文字的折线
 			if( item.middle <= pi/2 )
 			ctx.lineTo( w_x + 20, w_y);
 			else
 			ctx.lineTo( w_x - 20, w_y);
-			ctx.strokeStyle = 'gray';
+			ctx.strokeStyle = self.text_color.gray;
 			ctx.stroke();
-
-			ctx.font = '10px';
-			ctx.strokeStyle = '#000';
+			//文字内容
+			ctx.font = '12px Arial';
+			ctx.fillStyle = self.text_color.black;
 			ctx.textBaseline = 'middle';
-			if( item.middle <= pi/2 )
-			ctx.strokeText(item.name + ' ' + item.percent + '%', w_x + 25, w_y);
-			else{
+			var _text = item.name + ' ' + item.percent + '%';
+			var t_width = ctx.measureText(item.name).width;
+			if( item.middle <= pi/2 ){
+				ctx.fillText(item.name, w_x + 25, w_y);
+				ctx.fillStyle = self.text_color.gray;
+				ctx.fillText(item.percent + '%', w_x + 35 + t_width, w_y);
+			}else{
 				ctx.textAlign = 'right';
-				ctx.strokeText(item.name + ' ' + item.percent + '%', w_x-25, w_y);
+				ctx.fillText(item.name, w_x-25, w_y);
+				ctx.fillStyle = self.text_color.gray;
+				ctx.fillText(item.percent + '%', w_x - 35 - t_width, w_y);
 			}
 			ctx.closePath();
 
@@ -138,18 +146,18 @@ var batteryWater = function(opts){
 			makeWords();
 			
 			//小三角
-			var s_radius = 210;
-			var s_width = 5;
+			var s_radius = 119;
+			var s_width = 3;
 			for(var i=0; i<2; i++){
 				ctx.save();
 				if(i) ctx.rotate(item.end + pi/2);
 				else ctx.rotate(item.start + pi/2);
 				ctx.beginPath();	
 				ctx.moveTo(0, -s_radius); 
-				ctx.lineTo(s_width, -s_radius - s_width);
-				ctx.lineTo(-s_width, -s_radius - s_width);
+				ctx.lineTo(s_width, -s_radius - s_width - 2);
+				ctx.lineTo(-s_width, -s_radius - s_width - 2);
 				ctx.lineTo(0, -s_radius);
-				ctx.fillStyle = 'red';
+				ctx.fillStyle = self.text_color.red;
 				ctx.fill();
 				ctx.closePath();
 				ctx.restore();
@@ -183,9 +191,9 @@ var batteryWater = function(opts){
 		ctx.restore();
 	};
 	
-	var radius = 200;
+	var radius = 115;
 	var height = 20;
-	var hover_height = height + 8;
+	var hover_height = height + 4;
 	var catch_obj = null;
 
 	this.run = function(angle){
@@ -266,5 +274,14 @@ var drawWater = new batteryWater({
 		'#f86117',
 		'#b3b3b3',
 		'#ffc411',
-	]
+	],
+	text_color: {
+		blue:	'#0096ff',
+		green:	'#44be05',
+		yellow:	'#ffc411',
+		red:	'#f86117',
+		black:	'#59676b',
+		gray:	'#b3b3b3',
+		l_gray: '#e2e5e7'
+	}
 });

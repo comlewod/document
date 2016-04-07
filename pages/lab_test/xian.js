@@ -62,17 +62,17 @@ var batteryWater = function(opts){
 		ctx.translate(o_x, o_y);
 		//温度数字
 		ctx.beginPath();
-		ctx.font = '10px';
-		ctx.strokeStyle = self.color.gray;
+		ctx.font = '10px Arial';
+		ctx.fillStyle = self.color.gray;
 		ctx.textBaseline = 'middle';
 		ctx.textAlign = 'right';
-		ctx.strokeText(o_temp, -10, 0);
+		ctx.fillText(o_temp, -10, 0);
 		ctx.closePath();
 
 		//温度横线
 		ctx.beginPath();
 		for( var i=1; i<7; i++){
-			ctx.strokeText(o_temp + 5 * i , -10, -i * each_height);
+			ctx.fillText(o_temp + 5 * i , -10, -i * each_height);
 			ctx.moveTo(0, -i * each_height);
 			ctx.lineTo(scale_width, -i * each_height);
 		}
@@ -107,7 +107,7 @@ var batteryWater = function(opts){
 			ctx.lineTo( (i+1) * each_width, temp_ny);
 			ctx.lineTo( (i+1) * each_width, 0);
 			ctx.lineTo( temp_x, 0);
-			ctx.fillStyle = 'rgba(89, 103, 107, 0.05';
+			ctx.fillStyle = 'rgba(89, 103, 107, 0.05)';
 			ctx.fill();
 			ctx.closePath();
 			//竖线
@@ -155,6 +155,15 @@ var batteryWater = function(opts){
 		ctx.lineTo(scale_width, 0);
 		ctx.strokeStyle = self.color.black;
 		ctx.stroke();
+		ctx.closePath();
+
+		ctx.beginPath();
+		for(var i=0; i<this.timeScale.length; i++){
+			ctx.font = '10px Arial';
+			ctx.textAlign = 'center';
+			ctx.fillStyle = self.color.black;
+			ctx.fillText(this.timeScale[i], (2 * i + 1)* each_width, 20);
+		}
 		ctx.closePath();
 
 		ctx.beginPath();
@@ -213,10 +222,12 @@ var batteryWater = function(opts){
 		ctx.fillStyle = self.color.blue;
 		ctx.fill();
 
-		ctx.font = '10px';
+		ctx.font = '12px Arial';
+		//ctx.font = '12px "Helvitica Neue" lighter';
+		//ctx.font = '12px "Helvitica Neue", Helvitica, Arial, "Microsoft YaHei", sans-serif lighter';
 		ctx.textAlign = 'center';
-		ctx.strokeStyle = '#fff';
-		ctx.strokeText(pos.values, a_x, Math.floor(pos.y) - 13);
+		ctx.fillStyle = '#fff';
+		ctx.fillText(pos.values, a_x, Math.floor(pos.y) - 13);
 
 		ctx.closePath();
 		ctx.restore();
@@ -237,16 +248,18 @@ var batteryWater = function(opts){
 	this.animation = requestAnimationFrame(this.run);
 
 	this.canvas.on('mousemove', function(ev){
-		var mouse = F.getMousePos(ev, $(this));
-		//相对于原点的坐标轴位置
-		var pos = { x: mouse.x - o_x, y: mouse.y - o_y };
-		var now_one = Math.ceil( (pos.x - each_width/2) / each_width);
-		if( pos.x > 0 && pos.y < 0 ){
-			self.ctx.clearRect(0, 0, self.width, self.height);
-			self.makeScale();
-			self.drawTemp(1);
-			self.makeOy();
-			self.makeHover(arr_pos[now_one]);
+		if( y_height >= 100 ){
+			var mouse = F.getMousePos(ev, $(this));
+			//相对于原点的坐标轴位置
+			var pos = { x: mouse.x - o_x, y: mouse.y - o_y };
+			var now_one = Math.ceil( (pos.x - each_width/2) / each_width);
+			if( pos.x > 0 && pos.y < 0 ){
+				self.ctx.clearRect(0, 0, self.width, self.height);
+				self.makeScale();
+				self.drawTemp(1);
+				self.makeOy();
+				self.makeHover(arr_pos[now_one]);
+			}
 		}
 	});
 };
