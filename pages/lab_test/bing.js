@@ -32,7 +32,7 @@ var batteryWater = function(opts){
 		dom: '',
 		content: [],
 		color: {}
-	}, opts)
+	}, opts);
 
 	this.$dom = this.opts.dom; 
 	this.content = this.opts.content;
@@ -52,8 +52,14 @@ var batteryWater = function(opts){
 		if( index ){
 			var obj = {};
 			var start = 100 - self.content[index-1].values * 100;
-			obj.index = index - 1,
-			obj.start = start/100 * 2 * pi - pi/2;
+			obj.index = index - 1;
+			//obj.start = start/100 * 2 * pi - pi/2;
+			if( arr_content.length ){
+				obj.start = arr_content[arr_content.length - 1].end;
+			} else {
+				obj.start = start/100 * 2 * pi - pi/2;
+			}
+
 			obj.name = item.name;
 			obj.color = self.color[index-1];
 			obj.percent= parseInt( self.content[index-1].values * 100  - item.values * 100 );
@@ -70,7 +76,8 @@ var batteryWater = function(opts){
 					index: index,
 					name: '剩余电量', 
 					color: self.color[index],
-					start: all_num/100 * 2 * pi - pi/2,
+					//start: all_num/100 * 2 * pi - pi/2,
+					start: arr_content[arr_content.length-1].end,
 					percent: 100 - all_num,
 					num: 100 - item.values * 100,
 					end: 2*pi - pi/2
