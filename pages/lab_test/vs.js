@@ -6,9 +6,9 @@ var vsAnimation = function(opts){
 		dom: '',
 		content: [],
 		color: {}
-	}, opts)
+	}, opts);
 
-	this.$dom = this.opts.dom; 
+	this.$dom = this.opts.dom;
 	this.content = this.opts.content;
 	this.color = this.opts.color;
 
@@ -43,7 +43,7 @@ var vsAnimation = function(opts){
 
 			ctx.arc(c_radius, 0, point_radius, 0, 2*pi);
 			ctx.closePath();
-			ctx.fillStyle = self.color.gray;	
+			ctx.fillStyle = self.color.gray;
 			ctx.fill();
 
 			ctx.restore();
@@ -62,7 +62,7 @@ var vsAnimation = function(opts){
 		ctx.strokeStyle = self.color.gray;
 		ctx.stroke();
 		ctx.closePath();
-		
+
 		if( m_line > 0 ){
 			var p_num = Math.ceil((m_line - c_radius) / 10);
 			for(var i=1; i<p_num; i++){
