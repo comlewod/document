@@ -5,11 +5,13 @@
 var gulp = require('gulp');
 var path = require('path');
 var fsHandler = require('./fsHandler');
+var processLibs = require('./processLibs');
+var resolvePath = require('./resolvePath');
 var gulpFiles = require('./gulp-files');
 var dir = require('./dir');
 
 //需要打包文件的路径
-var pathPage = [
+var pagePath = [
 	path.join(dir.template, '*', '*', '*.php'),
 	path.join(dir.template, 'layouts', '*.php')
 ];
@@ -27,12 +29,26 @@ var delOutputFile = function(callback){
 
 var start = function(){
 	console.log('准备开始打包');
-	gulp.src(pathPage)
+	gulp.src(pagePath)
 	.pipe(gulpFiles(function(files){
 		for(var i=0; i<files.length; i++){
-			console.log(files[i].path);
+			process(files[i].path);
 		}
 	}));
+};
+
+var process = function(src){
+	//打包layouts时 
+	//if( src.indexOf('/global/') > -1 || src.indexOf('/layouts/') > -1 ){
+	if( src.indexOf('\\global\\') > -1 || src.indexOf('\\layouts\\') > -1 ){
+		var info = resolvePath(src);
+		var tplDir = info.tpl.dir;
+		if( src.indexOf('\\layouts\\') > -1 ){
+			tplDir = info.filename;
+		}
+		//tplDir为项目名称
+		new processLibs(tplDir); //开始打包项目的Libs 
+	}
 };
 var processAll = function(){
 	delOutputFile(start);
