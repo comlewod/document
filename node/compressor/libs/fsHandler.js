@@ -13,12 +13,19 @@ var fsHandler = {
 		//这里的function(files)为gulpFiles的参数fn
 		.pipe(gulpFiles(function(files){
 			if( files.length ){
+				var mark = files.length;
+
 				for(var i=0; i<files.length; i++){
 					if( fs.existsSync(files[i].path) ){
 						//删除文件
 						fs.unlink(files[i].path, function(err){
 							if(err) throw err;
-							if(i >= files.length) callback && callback();
+							mark--;
+							//当把所有文件删除后
+							if( mark == 0 ) {
+								console.log('删除完成');
+								callback && callback();
+							}
 						});
 					}
 				}

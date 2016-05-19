@@ -10,11 +10,14 @@ var dir = require('./dir');
 
 //需要打包文件的路径
 var pathPage = [
-	path.join(dir.template, '*', '*', '*.php')
+	path.join(dir.template, '*', '*', '*.php'),
+	path.join(dir.template, 'layouts', '*.php')
 ];
 
+//删除output里的文件
 var delOutputFile = function(callback){
 	var _path = [];
+	console.log('准备开始删除文件');
 	//打包前删除output里的文件
 	_path.push(path.join(dir.output, '*.*'));
 	//_path.push(path.join(dir.haha, '*.*'));
@@ -27,6 +30,7 @@ var start = function(){
 	gulp.src(pathPage)
 	.pipe(gulpFiles(function(files){
 		for(var i=0; i<files.length; i++){
+			console.log(files[i].path);
 		}
 	}));
 };
