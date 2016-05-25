@@ -7,9 +7,13 @@ var fs = require('fs');
 var dir = {};
 
 dir.root = '../../';//注意这里的路径为返回上两级为根目录，即dir.js模块的调用只能在compressor目录下
+dir.static = path.join(dir.root, 'static');
 
 //需要打包的文件
 dir.template = path.join(dir.root, 'pages');
+
+//静态资源，包括js  css img
+dir.page = path.join(dir.static, 'page');
 
 //打包完成的文件存放目录
 dir.output = path.join(dir.root, 'output');

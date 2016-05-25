@@ -40,6 +40,8 @@ var start = function(){
 var process = function(src){
 	//打包layouts时 
 	//if( src.indexOf('/global/') > -1 || src.indexOf('/layouts/') > -1 ){
+
+	//获取layout层等信息
 	if( src.indexOf('\\global\\') > -1 || src.indexOf('\\layouts\\') > -1 ){
 		var info = resolvePath(src);
 		var tplDir = info.tpl.dir;
