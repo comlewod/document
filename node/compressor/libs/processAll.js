@@ -39,13 +39,16 @@ var start = function(){
 
 var process = function(src){
 	//打包layouts时 
-	//if( src.indexOf('/global/') > -1 || src.indexOf('/layouts/') > -1 ){
 
 	//获取layout层等信息
-	if( src.indexOf('\\global\\') > -1 || src.indexOf('\\layouts\\') > -1 ){
+	if( src.indexOf('/global/') > -1 || src.indexOf('/layouts/') > -1 ){
+	//if( src.indexOf('\\global\\') > -1 || src.indexOf('\\layouts\\') > -1 ){
 		var info = resolvePath(src);
 		var tplDir = info.tpl.dir;
-		if( src.indexOf('\\layouts\\') > -1 ){
+
+		//从layouts文件夹里获取项目名称
+		//if( src.indexOf('\\layouts\\') > -1 ){
+		if( src.indexOf('/layouts/') > -1 ){
 			tplDir = info.filename;
 		}
 		//tplDir为项目名称

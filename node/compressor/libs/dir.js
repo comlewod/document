@@ -15,6 +15,9 @@ dir.template = path.join(dir.root, 'pages');
 //静态资源，包括js  css img
 dir.page = path.join(dir.static, 'page');
 
+//公共方法库
+dir.libs = path.join(dir.static, 'libs');
+
 //打包完成的文件存放目录
 dir.output = path.join(dir.root, 'output');
 

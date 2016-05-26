@@ -10,12 +10,19 @@ var Libs = function(tplDir){
 	var startTime = +new Date();//转成时间戳
 
 	var initialize = function(){
-		console.log(dir);
 		var process = new processor({
-			del_old_file: {
-				//js: path.join(dir.page, 'js', 'libs_'),
-				//css: path.join(dir.page, 'js', 'libs')
+			files: {
+				js: path.join(dir.libs, 'js', '*.js'),
+				css: [
+					path.join(dir.libs, 'css', '*.css'),
+					path.join(dir.libs, 'css', '*.less')
+				]
 			},
+			del_old_file: {
+				js: path.join(dir.page, 'js', 'libs_'),
+				css: path.join(dir.page, 'css', 'libs_')
+			},
+			is_min : true
 		});
 		process.start();
 	};

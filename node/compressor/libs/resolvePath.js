@@ -1,8 +1,8 @@
 // 将比如pages/layouts/koala.php等字符的路径信息拆解，并用对象保存每个路径点信息
 
 module.exports = function(src){
-	var _arrPath = src.split('\\').reverse(); //win是反斜杠
-	//var _arrPath = src.split('/');
+	//var _arrPath = src.split('\\').reverse(); //win是反斜杠
+	var _arrPath = src.split('/').reverse();
 
 	//页面如index里的组件如banner信息
 	var info = {
