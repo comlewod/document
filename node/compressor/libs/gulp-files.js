@@ -5,6 +5,7 @@ var through = require('through2');
 
 module.exports = function(fn){
 	var files = [];
+	//file是文件流里的每个文件，通过流来得到
 	var throughObj = through.obj(function(file, enc, callback){
 		files.push(file);
 		callback();

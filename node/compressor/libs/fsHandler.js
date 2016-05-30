@@ -7,6 +7,12 @@ var gulp = require('gulp');
 var gulpFiles = require('./gulp-files');
 
 var fsHandler = {
+	write: function(src, content, callback){
+		fs.writeFile(src, content, function(err){
+			if( err ) throw err;
+			callback && callback();
+		});
+	},
 	unlink: function(src, callback){
 		gulp.src(src)
 		//通过gulpFiles里的through模块遍历src目录下的所有文件并输出（同时through模块可以把vinly流转成可读可写流）
