@@ -33,7 +33,7 @@ Processor.prototype = {
 	},
 	writeNewFile: function(){
 		var self = this;
-		this.compressDetail = [];
+		this.compressDetail = [];//存放每个处理文件的信息，即文件路径和处理完后的名称
 		this.compressedType = {};
 
 		var _compress = function(type){
@@ -62,7 +62,7 @@ Processor.prototype = {
 				var mark = len;
 
 				if( len == 0 ){
-					self.compressType[type] = 1;
+					self.compressedType[type] = 1;//表示该类型的所有文件（比如所有js文件）已经处理完了
 					self.onFinished();
 					return;
 				}
@@ -92,6 +92,11 @@ Processor.prototype = {
 						//在static/page里创建由libs处理完的文件
 						var _write = function(){
 							fsHandler.write(path.join(self.opts.dest[type], newName), content, function(){
+								mark--;
+								if( mark == 0 ){
+									self.compressedType[type] = 1;
+									self.onFinished();
+								}
 							});
 						};
 
@@ -113,20 +118,23 @@ Processor.prototype = {
 			callback();
 			return false;
 		}
-		var delPath = (function(){
+		var del_path = (function(){
 			var _path = [];
 			for( var i in self.opts.del_old_file ){
 				_path.push( self.opts.del_old_file[i] + '*.' + i );
 			}
 			return _path;
 		})();
-		//这里删除为异步
-		fsHandler.unlink(delPath, callback);
+		//这里删除为异步（这里重复执行删除statics里的文件了，有待优化）
+		console.log('删除statics/page里的文件');
+		fsHandler.unlink(del_path, callback);
 	},
 
 	onFinished: function(){
-		for( var i in this.opts.files ){
-		}
+		/*for( var i in this.opts.files ){
+			if(!!!this.compressedType[i]) return;
+		}*/
+		this.opts.onFinished && this.opts.onFinished(this.compressDetail);
 	}
 };
 

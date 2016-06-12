@@ -4,14 +4,21 @@ var path = require('path');
 var dir = require('./dir');
 var md5 = require('./md5');
 var compileCss = require('./compileCss');
+var processGlobal = require('./processGlobal');
 
 var processor = require('./processor');
 var Libs = function(tplDir){
-	console.log('1.打包libs：' + tplDir);
+	console.log('****** 1.打包libs：' + tplDir);
 
 	var startTime = +new Date();//转成时间戳
 
 	var initialize = function(){
+		var _dest = {
+			js: '',
+			css: ''
+		};//用来记录libs的静态资源路径和名称，并用在layout里替换文件目录（将正常文件名替换成hash文件名）
+		var is_min = true;
+
 		var process = new processor({
 			files: {
 				js: path.join(dir.libs, 'js', '*.js'),
@@ -38,8 +45,14 @@ var Libs = function(tplDir){
 			},
 			onFinished: function(data){
 				for( var i=0; i<data.length; i++ ){
-
+					if( data[i][1].indexOf('.js') > -1 ){
+						_dest.js = data[i][1];
+					} else if( data[i][1].indexOf('.css') > -1 ){
+						_dest.css = data[i][1];
+					}
 				}
+				console.log('ok: libs（用时：' + (+new Date() - startTime) + ')');
+				processGlobal(is_min, _dest, tplDir);
 			},
 			del_old_file: {
 				js: path.join(dir.page, 'js', 'libs_'),

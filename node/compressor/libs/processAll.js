@@ -19,7 +19,7 @@ var pagePath = [
 //删除output里的文件
 var delOutputFile = function(callback){
 	var _path = [];
-	console.log('准备开始删除文件');
+	console.log('准备开始删除output里的文件');
 	//打包前删除output里的文件
 	_path.push(path.join(dir.output, '*.*'));
 	//_path.push(path.join(dir.haha, '*.*'));
@@ -52,7 +52,7 @@ var process = function(src){
 			tplDir = info.filename;
 		}
 		//tplDir为项目名称
-		new processLibs(tplDir); //开始打包项目的Libs 
+		new processLibs(tplDir); //开始打包Libs，以及该项目里的内容
 	}
 };
 var processAll = function(){
