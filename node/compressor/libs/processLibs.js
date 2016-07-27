@@ -38,6 +38,7 @@ var Libs = function(tplDir){
 				}
 				//将中文转为unicode，保护里面的文字注释不被人所识
 				//content = toUnicode(content);
+				return content;
 			},
 			dest: {
 				js: path.join(dir.page, 'js'),
@@ -51,14 +52,16 @@ var Libs = function(tplDir){
 						_dest.css = data[i][1];
 					}
 				}
-				console.log('ok: libs（用时：' + (+new Date() - startTime) + ')');
+				//!================= 这里有个问题，每个项目都会打包lib，重复打包 ========================
+				console.log('流程:libs_js & css_done: libs（用时：' + (+new Date() - startTime) + ')');
 				processGlobal(is_min, _dest, tplDir);
 			},
 			del_old_file: {
 				js: path.join(dir.page, 'js', 'libs_'),
 				css: path.join(dir.page, 'css', 'libs_')
 			},
-			is_min : true
+			is_min : true,
+			is_compile: true
 		});
 		process.start();
 	};

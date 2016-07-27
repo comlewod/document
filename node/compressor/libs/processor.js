@@ -3,6 +3,7 @@ var path = require('path');
 var uglify = require('gulp-uglify');
 
 var cssmin = require('gulp-minify-css');
+var gulpLess = require('gulp-less');
 
 var gulpFile = require('./gulp-files');
 var fsHandler = require('./fsHandler');
@@ -40,10 +41,13 @@ Processor.prototype = {
 			var ext = '.' + type;
 			var files = self.opts.files[type];
 			var stream = gulp.src(files);
-
+			
+			//将所有文件进行编译和压缩
 			if( type == 'css' ){
 				//对于pages里的less等文件需要编译
 				if( self.opts.is_compile ){
+					//编译less
+					stream = stream.pipe(gulpLess());
 				}
 			} else if( type == 'js' ){
 			}
@@ -54,10 +58,12 @@ Processor.prototype = {
 					stream = stream.pipe(uglify());
 				} else if( type == 'css' ){
 					stream = stream.pipe(cssmin());
+				} else if( type == 'png' || type == 'jpg' ){
 				}
 			}
 
 			stream.pipe(gulpFile(function(files){
+				//对每个文件再进行处理
 				var len = files.length;
 				var mark = len;
 
@@ -72,7 +78,7 @@ Processor.prototype = {
 					var content = String(file.contents);
 					var newName;
 					
-					//处理文件内容，比如CSS3的兼容转换
+					//二次处理文件内容（可自定义的处理），比如CSS3的兼容转换
 					if( self.opts.recontent ){
 						var _content = self.opts.recontent(file.path, content);
 						if( _content ) content = _content;
@@ -89,7 +95,7 @@ Processor.prototype = {
 							content = file.contents;
 						}
 						
-						//在static/page里创建由libs处理完的文件
+						//在static/page里创建在libs处理完的文件
 						var _write = function(){
 							fsHandler.write(path.join(self.opts.dest[type], newName), content, function(){
 								mark--;

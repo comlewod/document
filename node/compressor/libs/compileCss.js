@@ -35,4 +35,5 @@ module.exports = function(content){
 		//全局匹配文件内容
 		content = content.replace(reg[i][0], reg[i][1]);
 	}
+	return content;
 };
