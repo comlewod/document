@@ -21,7 +21,7 @@ dir.libs = path.join(dir.static, 'libs');
 
 //打包完成的文件存放目录
 dir.output = path.join(dir.root, 'output');
-dir.out_widget = path.join(dir.output, 'widgets');
+dir.output_widget = path.join(dir.output, 'widgets');
 
 dir.haha = path.join(dir.root, 'haha');
 

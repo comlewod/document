@@ -35,7 +35,7 @@ Processor.prototype = {
 	},
 	writeNewFile: function(){
 		var self = this;
-		this.compressDetail = [];//存放每个处理文件的信息，即文件路径和处理完后的名称
+		this.compressDetail = [];//二维数组，存放每个处理文件的信息，即原文件路径和处理完后的文件名称，每个文件信息都是一个数组
 		this.compressedType = {};
 
 		var _compress = function(type){
@@ -59,7 +59,7 @@ Processor.prototype = {
 					stream = stream.pipe(uglify());
 				} else if( type == 'css' ){
 					stream = stream.pipe(cssmin());
-				} else if( type == 'png' || type == 'jpg' ){
+				//} else if( type == 'png' || type == 'jpg' ){
 				}
 			}
 
