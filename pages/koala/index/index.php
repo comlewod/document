@@ -1,1 +1,1 @@
-koala首页
+{widget "header", array()}

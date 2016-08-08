@@ -4,6 +4,7 @@ var uglify = require('gulp-uglify');
 
 var cssmin = require('gulp-minify-css');
 var gulpLess = require('gulp-less');
+//var imagemin = require('gulp-imagemin');
 
 var gulpFile = require('./gulp-files');
 var fsHandler = require('./fsHandler');
@@ -78,7 +79,7 @@ Processor.prototype = {
 					var content = String(file.contents);
 					var newName;
 					
-					//二次处理文件内容（可自定义的处理），比如CSS3的兼容转换
+					//二次处理文件内容（可自定义的处理），比如CSS3的兼容转换，img图片的地址全文替换
 					if( self.opts.recontent ){
 						var _content = self.opts.recontent(file.path, content);
 						if( _content ) content = _content;
@@ -91,11 +92,11 @@ Processor.prototype = {
 						self.compressDetail.push([file.path, newName]);
 
 						if( type == 'png' || type == 'jpg' || type == 'gif' ){
-							//图片文件需要写入原有格式
+							//图片文件需要写入原有格式，不使用String
 							content = file.contents;
 						}
 						
-						//在static/page里创建在libs处理完的文件
+						//在static/page里创建静态资源（需要手动创建路径文件夹比如js、css等，下面的write不会自动创建）
 						var _write = function(){
 							fsHandler.write(path.join(self.opts.dest[type], newName), content, function(){
 								mark--;
@@ -127,6 +128,7 @@ Processor.prototype = {
 		var del_path = (function(){
 			var _path = [];
 			for( var i in self.opts.del_old_file ){
+				//这里只需匹配到前缀名称相同就行，所以使用*.匹配到某个页面下的widget的所有文件
 				_path.push( self.opts.del_old_file[i] + '*.' + i );
 			}
 			return _path;
@@ -137,9 +139,11 @@ Processor.prototype = {
 	},
 
 	onFinished: function(){
-		/*for( var i in this.opts.files ){
+		
+		for( var i in this.opts.files ){
+			//如果原输入的目录文件files没有被处理，则返回
 			if(!!!this.compressedType[i]) return;
-		}*/
+		}
 		this.opts.onFinished && this.opts.onFinished(this.compressDetail);
 	}
 };

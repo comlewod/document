@@ -9,7 +9,7 @@ var gulpFiles = require('./gulp-files');
 var fsHandler = {
 	write: function(src, content, callback){
 		fs.writeFile(src, content, function(err){
-			if( err ) throw err;
+			//if( err ) throw err;
 			callback && callback();
 		});
 	},
@@ -47,9 +47,7 @@ var fsHandler = {
 				}
 				function unlink(i){
 					fs.unlink(files[i].path, function(err){
-						if( err ) {
-							//throw err;
-						}
+						//if( err ) throw err;
 						mark--;
 						if( mark == 0 ) callback && callback();
 					});

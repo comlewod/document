@@ -11,6 +11,7 @@ dir.static = path.join(dir.root, 'static');
 
 //需要打包的文件
 dir.template = path.join(dir.root, 'pages');
+dir.widget = path.join(dir.root, 'pages');
 
 //静态资源，包括js  css img
 dir.page = path.join(dir.static, 'page');
@@ -20,6 +21,7 @@ dir.libs = path.join(dir.static, 'libs');
 
 //打包完成的文件存放目录
 dir.output = path.join(dir.root, 'output');
+dir.out_widget = path.join(dir.output, 'widgets');
 
 dir.haha = path.join(dir.root, 'haha');
 
