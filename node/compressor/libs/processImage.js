@@ -122,7 +122,7 @@ Images.prototype = {
 				return self.replaceContent(info, content);
 			},
 			onFinished: function(){
-				console.log('widget——文本文件处理——done');
+				console.log('| 完成：打包至output');
 				self.callback && self.callback();
 			},
 			delOldFile: _del_files,

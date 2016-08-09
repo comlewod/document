@@ -134,7 +134,7 @@ Processor.prototype = {
 			return _path;
 		})();
 		//这里删除为异步（这里重复执行删除statics里的文件了，有待优化）
-		console.log('删除statics/page里的文件');
+		console.log('| 完成：删除statics/page里的文件');
 		fsHandler.unlink(del_path, callback);
 	},
 

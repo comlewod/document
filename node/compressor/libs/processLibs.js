@@ -8,7 +8,7 @@ var processGlobal = require('./processGlobal');
 
 var processor = require('./processor');
 var Libs = function(tplDir){
-	console.log('****** 1.打包libs：' + tplDir);
+	console.log('****** 1、' + tplDir + '___打包libs');
 
 	var startTime = +new Date();//转成时间戳
 
@@ -53,7 +53,7 @@ var Libs = function(tplDir){
 					}
 				}
 				//!================= 这里有个问题，每个项目都会打包lib，重复打包 ========================
-				console.log('流程:libs_js & css_done: libs（用时：' + (+new Date() - startTime) + ')');
+				console.log('---完成:' + tplDir + '___打包libs: libs（用时：' + (+new Date() - startTime) + ')');
 				processGlobal(is_min, _dest, tplDir);
 			},
 			del_old_file: {
