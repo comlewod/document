@@ -32,16 +32,16 @@ Images.prototype = {
 
 		//获取widget目录下的所有图片
 		for( var i in this.widgets ){
-			_files.jpg.push(path.join(dir.widget, self.info.tpl.dir, self.info.tpl.name, i, '*.jpg'));
-			_files.png.push(path.join(dir.widget, self.info.tpl.dir, self.info.tpl.name, i, '*.png'));
-			_files.gif.push(path.join(dir.widget, self.info.tpl.dir, self.info.tpl.name, i, '*.gif'));
+			_files.jpg.push(path.join(dir.pages, self.info.tpl.dir, self.info.tpl.name, i, '*.jpg'));
+			_files.png.push(path.join(dir.pages, self.info.tpl.dir, self.info.tpl.name, i, '*.png'));
+			_files.gif.push(path.join(dir.pages, self.info.tpl.dir, self.info.tpl.name, i, '*.gif'));
 		}
 
 		//打包前删除上次打包的相应图片，这里i是widget名称，和下面的rename函数的name前缀名称相同
 		for( var i in this.widgets ){
-			_delFiles.jpg.push(path.join(dir.page, 'img', 'img_' + md5(this.info.prefix + i).slice(0, 5)));
-			_delFiles.png.push(path.join(dir.page, 'img', 'img_' + md5(this.info.prefix + i).slice(0, 5)));
-			_delFiles.gif.push(path.join(dir.page, 'img', 'img_' + md5(this.info.prefix + i).slice(0, 5)));
+			_delFiles.jpg.push(path.join(dir.static_page, 'img', 'img_' + md5(this.info.prefix + i).slice(0, 5)));
+			_delFiles.png.push(path.join(dir.static_page, 'img', 'img_' + md5(this.info.prefix + i).slice(0, 5)));
+			_delFiles.gif.push(path.join(dir.static_page, 'img', 'img_' + md5(this.info.prefix + i).slice(0, 5)));
 		}
 		
 		if( _files.jpg.length == 0 ){
@@ -63,9 +63,9 @@ Images.prototype = {
 				self.replacePath();
 			},
 			dest: {
-				jpg: path.join(dir.page,  'img'),
-				png: path.join(dir.page,  'img'),
-				gif: path.join(dir.page,  'img')
+				jpg: path.join(dir.static_page,  'img'),
+				png: path.join(dir.static_page,  'img'),
+				gif: path.join(dir.static_page,  'img')
 			},
 			
 			/*recontent: function(filepath, content){
@@ -86,7 +86,7 @@ Images.prototype = {
 		var front_name = '';
 
 		for( var i in this.widgets ){
-			front_name = path.join(dir.widget, self.info.tpl.dir, self.info.tpl.name, i);
+			front_name = path.join(dir.pages, self.info.tpl.dir, self.info.tpl.name, i);
 			_files.php.push( path.join(front_name, '*.php') );
 			_files.js.push( path.join(front_name, '*.js') );
 			_files.css.push( path.join(front_name, i, '*.css') );

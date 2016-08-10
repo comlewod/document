@@ -13,7 +13,7 @@ var widgetMap = function(src, callback){
 	var _widgetMap = {};//记录widget，比如post下的comment、page
 	var info = resolvePath(src);
 
-	gulp.src(path.join(dir.template, info.tpl.dir, info.tpl.name, '*', '*.php')).pipe(gulpFile(function(files){
+	gulp.src(path.join(dir.pages, info.tpl.dir, info.tpl.name, '*', '*.php')).pipe(gulpFile(function(files){
 		var info;
 		var content;
 		var len = files.length;

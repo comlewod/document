@@ -10,11 +10,10 @@ dir.root = '../../';//注意这里的路径为返回上两级为根目录，即d
 dir.static = path.join(dir.root, 'static');
 
 //需要打包的文件
-dir.template = path.join(dir.root, 'pages');
-dir.widget = path.join(dir.root, 'pages');
+dir.pages = path.join(dir.root, 'pages');
 
 //静态资源，包括js  css img
-dir.page = path.join(dir.static, 'page');
+dir.static_page = path.join(dir.static, 'page');
 
 //公共方法库
 dir.libs = path.join(dir.static, 'libs');
@@ -22,6 +21,7 @@ dir.libs = path.join(dir.static, 'libs');
 //打包完成的文件存放目录
 dir.output = path.join(dir.root, 'output');
 dir.output_widget = path.join(dir.output, 'widgets');
+dir.output_pages = path.join(dir.output, 'pages');
 
 dir.haha = path.join(dir.root, 'haha');
 

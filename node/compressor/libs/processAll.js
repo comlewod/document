@@ -12,8 +12,8 @@ var dir = require('./dir');
 
 //需要打包文件的路径
 var pagePath = [
-	path.join(dir.template, '*', '*', '*.php'),
-	path.join(dir.template, 'layouts', '*.php')
+	path.join(dir.pages, '*', '*', '*.php'),
+	path.join(dir.pages, 'layouts', '*.php')
 ];
 
 //删除output里的文件

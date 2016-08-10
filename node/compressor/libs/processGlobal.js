@@ -9,10 +9,15 @@ var widgetMap = require('./widgetMap');
 var compileCss = require('./compileCss');
 
 var Global = function(is_min, lib_dest, tplDir){
+	//lib_dest为这个项目前面lib里打包好的文件目录
 	console.log('****** 2、' + tplDir + '___打包global');
 
-	var src = path.join(dir.template, tplDir, 'global', 'test.php');//这里填写test.php是用来获取该项目的widget位置，无需有该文件
+	var src = path.join(dir.pages, tplDir, 'global', 'test.php');//这里填写test.php是用来获取该项目的widget位置，无需有该文件
 	var _widgets;
+	var _dest = {
+		libs: lib_dest,
+		global: {js: '', css: ''}
+	};
 	
 	//获取项目子页面里的说有widget，并将widget里的文本文件都打包到output文件里，图片打包到static/page/img里
 	//这一步并没有对css、js文件进行编译
@@ -23,6 +28,7 @@ var Global = function(is_min, lib_dest, tplDir){
 			widgets: _widgets,
 			filepath: src,
 			callback: function(){
+				process.start();
 			},
 			is_min: true
 		});
@@ -63,22 +69,51 @@ var Global = function(is_min, lib_dest, tplDir){
 		onFinished: function(data){
 			for( var i=0; i<data.length; i++ ){
 				if( data[i][1].indexOf('.js') > -1 ){
+					_dest.global.js = data[i][1];
 				} else if( data[i][1].indexOf('.css') > -1 ){
+					_dest.global.css = data[i][1];
 				}
 			}
+			replacePath();
 		},
 		dest: {
-			js: path.join(dir.page, 'js'),
-			css: path.join(dir.page, 'css')
+			js: path.join(dir.static_page, 'js'),
+			css: path.join(dir.static_page, 'css')
 		},
-		delOldFile: {
-			js: path.join(dir.page, 'js', 'global_' + pre_name),
-			css: path.join(dir.page, 'css', 'global_' + pre_name),
+		del_old_file: {
+			js: path.join(dir.static_page, 'js', 'global_' + pre_name),
+			css: path.join(dir.static_page, 'css', 'global_' + pre_name),
 		},
 		is_min: true,
 		is_compile: true
 	});
-	process.start();
+	
+	//打包layouts文件
+	var replacePath = function(){
+		var process = new processor({
+			files: {
+				php: path.join(dir.pages, 'layouts', tplDir + '.php'),
+			},
+			dest: {
+				php: dir.output_pages,
+			},
+			rename: function(filepath, content){
+				return 'layouts_' + tplDir;
+			},
+			recontent: function(filepath, content){
+				//var content = compileTpl(content);
+				content = content.replace('libs.js', _dest.libs.js);
+				content = content.replace('libs.css', _dest.libs.css);
+				content = content.replace('global.js', _dest.global.js);
+				content = content.replace('global.css', _dest.global.css);
+				return content;
+			},
+			onFinished: function(){
+				console.log('| 完成：layout');
+			}
+		});
+		process.start();
+	};
 };
 
 module.exports = Global;

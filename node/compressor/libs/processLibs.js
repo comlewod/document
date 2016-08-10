@@ -41,8 +41,8 @@ var Libs = function(tplDir){
 				return content;
 			},
 			dest: {
-				js: path.join(dir.page, 'js'),
-				css: path.join(dir.page, 'css')
+				js: path.join(dir.static_page, 'js'),
+				css: path.join(dir.static_page, 'css')
 			},
 			onFinished: function(data){
 				for( var i=0; i<data.length; i++ ){
@@ -57,8 +57,8 @@ var Libs = function(tplDir){
 				processGlobal(is_min, _dest, tplDir);
 			},
 			del_old_file: {
-				js: path.join(dir.page, 'js', 'libs_'),
-				css: path.join(dir.page, 'css', 'libs_')
+				js: path.join(dir.static_page, 'js', 'libs_'),
+				css: path.join(dir.static_page, 'css', 'libs_')
 			},
 			is_min : true,
 			is_compile: true
