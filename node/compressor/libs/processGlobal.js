@@ -7,6 +7,7 @@ var processor = require('./processor');
 var processImage = require('./processImage');
 var widgetMap = require('./widgetMap');
 var compileCss = require('./compileCss');
+var tasks = require('./tasks');
 
 var Global = function(is_min, lib_dest, tplDir){
 	//lib_dest为这个项目前面lib里打包好的文件目录
@@ -110,6 +111,7 @@ var Global = function(is_min, lib_dest, tplDir){
 			},
 			onFinished: function(){
 				console.log('| 完成：layout');
+				tasks('all').end();
 			}
 		});
 		process.start();

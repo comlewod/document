@@ -53,7 +53,7 @@ var Libs = function(tplDir){
 					}
 				}
 				//!================= 这里有个问题，每个项目都会打包lib，重复打包 ========================
-				console.log('---完成:' + tplDir + '___打包libs: libs（用时：' + (+new Date() - startTime) + ')');
+				console.log('| 完成:' + tplDir + '___打包libs: libs（用时：' + (+new Date() - startTime) + ')');
 				processGlobal(is_min, _dest, tplDir);
 			},
 			del_old_file: {

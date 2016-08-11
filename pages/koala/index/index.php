@@ -1,1 +1,3 @@
-{widget "header", array()}
+{widget "page", array()}
+
+{widget "battery", array()}

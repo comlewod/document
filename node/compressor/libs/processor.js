@@ -12,7 +12,7 @@ var fsHandler = require('./fsHandler');
 var Processor = function(opts){
 	this.opts = {
 		files: [],
-		dest: {},
+		dest: null,
 		rename: function(){ return null; },
 		recontent: function(){ return null; },
 		onFinished: function(){},

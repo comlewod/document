@@ -1,0 +1,1 @@
+var img = 'header_img.gif';
