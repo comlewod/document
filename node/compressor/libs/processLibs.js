@@ -7,6 +7,7 @@ var compileCss = require('./compileCss');
 var processGlobal = require('./processGlobal');
 
 var processor = require('./processor');
+
 var Libs = function(tplDir){
 	console.log('****** 1、' + tplDir + '___打包libs');
 
@@ -61,6 +62,7 @@ var Libs = function(tplDir){
 				css: path.join(dir.static_page, 'css', 'libs_')
 			},
 			is_min : true,
+			is_concat: true,
 			is_compile: true
 		});
 		process.start();

@@ -4,12 +4,20 @@ module.exports = function(src){
 	//var _arrPath = src.split('\\').reverse(); //win是反斜杠
 	var _arrPath = src.split('/').reverse();
 
-	//页面如index里的组件如banner信息
+	//页面如index里的组件如banner信息 
+	/*ex: pages/koala/post/select/select_img.jpg
+	{
+		widgetname: 'select',
+		ext: 'jpg',
+		filename: 'select_img',
+		tpl: {name: 'koala', dir: 'post'},
+	}
+	*/
 	var info = {
 		widgetname: _arrPath[1], //组件名称，banner
 		ext: _arrPath[0].split('.').pop(),
-		filename: _arrPath[0].slice(0, _arrPath[0].lastIndexOf('.')),
-		//filename: _arrPath[0].split('.')[0], //项目名称
+		//filename: _arrPath[0].slice(0, _arrPath[0].lastIndexOf('.')),
+		filename: _arrPath[0].split('.')[0], //文件名称
 		tpl: {
 			name: _arrPath[2], //页面名称，如index
 			dir: _arrPath[3] //项目名称, 如koala
@@ -17,7 +25,14 @@ module.exports = function(src){
 		type: 'widget'
 	};
 
-	//页面（比如post）组件信息
+	//页面（比如post）组件信息 
+	/*ex:/pages/koala/post/index.php
+	{
+		widgetname: '',
+		ext: 'php',
+		filename: 'index',
+		tpl: {name: 'koala', dir: 'post'},
+	} */
 	if( _arrPath[4] != 'pages' ){
 		info.tpl.name = _arrPath[1]; //项目第一子级组件名称，即页面名称，如post、index
 		info.tpl.dir = _arrPath[2]; //项目名称

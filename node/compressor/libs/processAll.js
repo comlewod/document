@@ -14,7 +14,7 @@ var dir = require('./dir');
 
 //需要打包文件的路径
 var pagePath = [
-	path.join(dir.pages, '*', '*', '*.php'),
+	path.join(dir.pages, '*', '*', '*.php'),//ex: pages/koala/post/index.php
 	path.join(dir.pages, 'layouts', '*.php')
 ];
 //新建一个名为all的任务，该任务包含 lib 和项目的 layout 和 global 的打包
@@ -54,7 +54,6 @@ var process = function(src){
 		var tplDir = info.tpl.dir;
 
 		//从layouts文件夹里获取项目名称
-		//if( src.indexOf('\\layouts\\') > -1 ){
 		if( src.indexOf('/layouts/') > -1 ){
 			tplDir = info.filename;
 		}

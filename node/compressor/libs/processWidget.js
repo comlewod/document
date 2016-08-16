@@ -105,7 +105,7 @@ Widget.prototype = {
 		}
 
 		if( !files.js.length || !files.css.length ){
-			self.replacePath(filepath, fiels);
+			self.replacePath(filepath, files);
 			return;
 		}
 
@@ -118,12 +118,26 @@ Widget.prototype = {
 			rename: function(filepath, content){
 				return 'page_' + md5(prefix).slice(0, 5) + md5(content).slice(0, 5);
 			},
-			onFinished: function(data){
+			recontent: function(filepath, content){
 				if( filepath.indexOf('.css') > -1 ){
 					content = compileCss(content);
 				}
 				//content = self.toUnicode(content);
 				return content;
+			},
+			onFinished: function(data){
+				var dest = {js: '', css: ''};
+
+				for( var i=0; i<data.length; i++ ){
+					if( data[i][1].indexOf('.js') > -1 ){
+						//一般合并完后只是一个文件
+						dest.js = data[i][1];
+					} else if( data[i][1].indexOf('.css') > -1 ){
+						dest.css = data[i][1];
+					}
+				}
+
+				self.replacePath(filepath, dest);
 			},
 			del_old_file: {
 				js: path.join(dir.static_page, 'js', 'page_' + md5(prefix).slice(0, 5)),
@@ -134,6 +148,33 @@ Widget.prototype = {
 			is_compile: true,
 		});
 
+		process.start();
+	},
+
+	replacePath: function(filepath, dest){
+		var process = new processor({
+			files: {
+				php: filepath
+			},
+			dest: {
+				php: dir.output_pages
+			},
+			rename: function(filepath, content){
+				var info = resolvePath(filepath);
+				return info.tpl.dir + '_' + info.tpl.name + '_' + info.filename;
+			},
+			recontent: function(filepath, content){
+				if( dest.js && dest.css ){
+				}
+				return content;
+			},
+			onFinished: function(){
+				tasks('static').end();
+				if( tasks('static').isEmpty() ){
+					tasks('all').end();
+				}
+			}
+		});
 		process.start();
 	},
 

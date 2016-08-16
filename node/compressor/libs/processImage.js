@@ -14,8 +14,8 @@ var processor = require('./processor');
 
 var Images = function(opts){
 	var self = this;
-	this.info = resolvePath(opts.filepath);
-	this.widgets = opts.widgets;
+	this.info = resolvePath(opts.filepath);//opts.filepath为页面文件的地址，ex: pages/koala/post/index.php
+	this.widgets = opts.widgets;//该页面所有widgets
 	this.callback = opts.callback;
 	this.is_min = opts.is_min;
 	this.compileImg();

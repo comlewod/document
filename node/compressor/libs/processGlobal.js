@@ -9,11 +9,23 @@ var widgetMap = require('./widgetMap');
 var compileCss = require('./compileCss');
 var tasks = require('./tasks');
 
+var tpl_dirs = {};
 var Global = function(is_min, lib_dest, tplDir){
+	console.log(tpl_dirs);
+	//记录打包过的项目
+	if( tplDir ){
+		tpl_dirs[tplDir] = 1;
+	} else {
+		//当static/libs文件修改过时，将tpl_dirs打包过的项目重新打包，更新layouts中libs的文件名
+		for( var i in tpl_dirs ){
+			new Global(is_min, lib_dest, i);
+		}
+		return;
+	}
 	//lib_dest为这个项目前面lib里打包好的文件目录
 	console.log('****** 2、' + tplDir + '___打包global');
 
-	var src = path.join(dir.pages, tplDir, 'global', 'test.php');//这里填写test.php是用来获取该项目的widget位置，无需有该文件
+	var src = path.join(dir.pages, tplDir, 'global', 'test.php');//这里填写test.php是用来获取该项目的widget位置，无需有该文件，作用相当于/post/index.php，用于resolvePath分析
 	var _widgets;
 	var _dest = {
 		libs: lib_dest,
@@ -86,6 +98,7 @@ var Global = function(is_min, lib_dest, tplDir){
 			css: path.join(dir.static_page, 'css', 'global_' + pre_name),
 		},
 		is_min: true,
+		is_concat: true,
 		is_compile: true
 	});
 	
