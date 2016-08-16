@@ -1,0 +1,1 @@
+var a = '这个是sidebar';

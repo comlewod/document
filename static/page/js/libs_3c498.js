@@ -1,1 +1,0 @@
-var G=G||{};!function(){var e={};e.fn={},e.define=function(n,i){"object"==typeof i&&(e.fn[n]=i)},e.use=function(n,i){e.fn[n].init(i)},e.require=function(n,i){var t=e.fn[n];return t},G.define=e.define,G.use=e.use,G.require=e.require}(),G.define("post/page",{init:function(e){this.bindEvent()},bindEvent:function(){console.log(23424)}});var re=G.require("post/page");

@@ -1,9 +1,9 @@
 var gulp = require('gulp');
 var path = require('path');
 var uglify = require('gulp-uglify');
-
 var cssmin = require('gulp-minify-css');
 var gulpLess = require('gulp-less');
+var concat = require('gulp-concat');
 //var imagemin = require('gulp-imagemin');
 
 var gulpFile = require('./gulp-files');
@@ -19,6 +19,7 @@ var Processor = function(opts){
 		del_old_file: {},
 		is_min: false, //是否压缩
 		is_compile: false, //是否编译 less
+		is_concat: false, //是否合并
 	};
 	//将opts的属性和this.opts默认属性合并
 	for( var i in opts ){
@@ -42,6 +43,10 @@ Processor.prototype = {
 			var ext = '.' + type;
 			var files = self.opts.files[type];
 			var stream = gulp.src(files);
+
+			if( self.opts.is_concat ){
+				stream = stream.pipe(concat('concat' + ext));
+			}
 			
 			//将所有文件进行编译和压缩
 			if( type == 'css' ){

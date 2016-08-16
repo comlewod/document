@@ -8,8 +8,8 @@ module.exports = function(src){
 	var info = {
 		widgetname: _arrPath[1], //组件名称，banner
 		ext: _arrPath[0].split('.').pop(),
-		//filename: _arrPath[0].slice(0, _arrPath[0].lastIndexOf('.'))
-		filename: _arrPath[0].split('.')[0], //项目名称
+		filename: _arrPath[0].slice(0, _arrPath[0].lastIndexOf('.')),
+		//filename: _arrPath[0].split('.')[0], //项目名称
 		tpl: {
 			name: _arrPath[2], //页面名称，如index
 			dir: _arrPath[3] //项目名称, 如koala

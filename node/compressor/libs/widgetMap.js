@@ -5,25 +5,6 @@ var dir = require('./dir');
 var config = require('./config');
 var gulpFile = require('./gulp-files');
 
-//搜索文件文本内的widget，比如index.php插入了{widget 'battery}
-var findWidget = function(content){
-	var widgets = {};
-	var ret = [];
-	var matches = content.match(config.widget_reg) || [];
-
-	for( var i=0; i<matches.length; i++ ){
-		var name = matches[i].replace(config.widget_reg, '$1');
-		name = name.split(',')[0].replace(config.widget_name_reg, "");
-		if( !!!widgets[name] ){
-			widgets[name] = 1;
-		}
-	}
-	for( var i in widgets ){
-		ret.push(i);
-	}
-	return ret;
-};
-
 /* 查找子页面下的widget，比如global下的footer、header */
 var widgetMap = function(src, callback){
 	var _widgetMap = {};//记录widget，比如post下的comment、page
@@ -42,6 +23,25 @@ var widgetMap = function(src, callback){
 		}
 		callback && callback(_widgetMap);
 	}));
+};
+
+//搜索文件文本内的widget，比如index.php插入了{widget 'battery}
+var findWidget = function(content){
+	var widgets = {};
+	var ret = [];
+	var matches = content.match(config.widget_reg) || [];
+
+	for( var i=0; i<matches.length; i++ ){
+		var name = matches[i].replace(config.widget_reg, '$1');
+		name = name.split(',')[0].replace(config.widget_name_reg, "");
+		if( !!!widgets[name] ){
+			widgets[name] = 1;
+		}
+	}
+	for( var i in widgets ){
+		ret.push(i);
+	}
+	return ret;
 };
 
 module.exports = widgetMap;

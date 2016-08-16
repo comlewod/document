@@ -77,7 +77,7 @@ Images.prototype = {
 		process.start();
 	},
 	
-	//图片处理完后，对widget里的php、js、css（less）进行打包处理
+	//图片处理完后，对widget里的php、js、css（less）进行集合整理，放在output/widgets
 	replacePath: function(){
 		var self = this;
 		
