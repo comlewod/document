@@ -39,7 +39,6 @@ var start = function(){
 					process(files[index].path);
 				}
 			};
-			//process(files[i].path);
 			task.pushTask(fn(i));
 		}
 	}));
