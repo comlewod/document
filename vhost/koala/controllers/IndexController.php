@@ -5,7 +5,7 @@ use common\components\KoalaController;
 
 class IndexController extends KoalaController{
 	public function actionIndex(){
-		$this->display('index', array(
+		return $this->display('index', array(
 			'str' => 'haha'
 		));
 	}

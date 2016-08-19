@@ -7,6 +7,7 @@ var processor = require('./processor');
 var processImage = require('./processImage');
 var widgetMap = require('./widgetMap');
 var compileCss = require('./compileCss');
+var compileTpl = require('./compileTpl');
 
 var dir = require('./dir');
 var md5 = require('./md5');
@@ -166,6 +167,7 @@ Widget.prototype = {
 			recontent: function(filepath, content){
 				if( dest.js && dest.css ){
 				}
+				content = compileTpl(content);
 				return content;
 			},
 			onFinished: function(){
