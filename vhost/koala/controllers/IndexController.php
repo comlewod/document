@@ -1,6 +1,7 @@
 <?php
 namespace koala\controllers;
 
+use Yii;
 use common\components\KoalaController;
 
 class IndexController extends KoalaController{

@@ -7,6 +7,7 @@ var processor = require('./processor');
 var processImage = require('./processImage');
 var widgetMap = require('./widgetMap');
 var compileCss = require('./compileCss');
+var compileTpl = require('./compileTpl');
 var tasks = require('./tasks');
 
 var tpl_dirs = {};
@@ -115,7 +116,7 @@ var Global = function(is_min, lib_dest, tplDir){
 				return 'layouts_' + tplDir;
 			},
 			recontent: function(filepath, content){
-				//var content = compileTpl(content);
+				var content = compileTpl(content);
 				content = content.replace('libs.js', _dest.libs.js);
 				content = content.replace('libs.css', _dest.libs.css);
 				content = content.replace('global.js', _dest.global.js);

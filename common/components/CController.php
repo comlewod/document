@@ -8,8 +8,9 @@ class CController extends Controller {
 	public $tplDir = 'www';			//项目文件名
 	public $tpl = '';
 	
+	public $_tempVal;				//临时变量
 	public $_layout_ = '';			//项目的layout名
-	public $_layoutData = array();	//传递他给layout的数据 
+	public $_layoutData = array();	//传递给给layout的数据 
 	public $_tplData = array();		//传递给模板页面的数据
 	public $_widget = array();
 	
@@ -18,6 +19,34 @@ class CController extends Controller {
 	 */
 	public function setLayout($name = ''){
 		$this->_layout_ = $name;
+	}
+
+	/*
+	 * 内容函数
+	 */
+	public function startBlock($val_name = ''){
+		$this->_tempVal = $val_name;
+		ob_start();
+	}
+	public function endBLock(){
+		$_buffer = ob_get_clean();	//这里没有输出缓冲区，而是将缓冲内容保存起来
+		$this->setData($this->_tempVal, $_buffer);
+	}
+
+	/*
+	 * 设置变量数据
+	 * $key: 变量名；$value：数值
+	 */
+	public function setData($key = '', $value = ''){
+		if( is_array($key) ){
+			//将$key复制为_layoutData
+			foreach( $key as $key_1 => $value_1 ){
+				$this->_layoutData[$key_1] = $value_1;
+			}
+
+		} else if( is_string($key) ){
+			$this->_layoutData[$key] = $value;
+		}
 	}
 
 	/*
@@ -38,7 +67,7 @@ class CController extends Controller {
 
 		extract($param, EXTR_OVERWRITE);
 
-		include(Yii::$app->params['ROOT'] . 'output/widgets' . $this->tplDir . '_' . $file_name . '.php');
+		include(Yii::$app->params['ROOT'] . 'output/widgets/' . $this->tplDir . '_' . $file_name . '.php');
 	}
 
 	public function display($file_name = '', $param = array(), $tpl = null){
@@ -63,13 +92,21 @@ class CController extends Controller {
 		ob_start();
 		ob_implicit_flush(false);// 关闭显式刷新，为true的话则每次有输出都会刷新缓冲区
 		include_once(Yii::$app->params['ROOT'] . 'output/pages/' . $this->tplDir . '_' .$file_name . '.php');
-
+		//一般这里都已经将页面内容赋值给$content
+		
+		//这里将$title、$description等变量置于当前环境中
 		extract($this->_layoutData, EXTR_OVERWRITE);
-
+	
+		//以layouts为主体，将已经赋值的变量置于layouts中
 		if( $this->_layout_ ){
+			//$content的值插入layout中
 			include(yii::$app->params['ROOT'] . 'output/pages/layouts_' . $this->_layout_ . '.php');
 		}
 		return ob_get_clean();
+	}
+
+	public function yiiApp($key){
+		echo Yii::$app->params[$key];
 	}
 	
 	//获得$this的类名，比如IndexController

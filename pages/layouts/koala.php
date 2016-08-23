@@ -1,15 +1,17 @@
 <html>
 
 <head>
-<script src="libs.css">
+<script src="{yiiApp 'STATIC_HOST'}page/css/libs.css">
 </script>
 
-<script src="global.css">
+<script src="{yiiApp 'STATIC_HOST'}/page/css/global.css">
 </script>
 </head>
 
 <body>
-<h2>hahah</h2>
+	<div class="wrap">
+		{$content}
+	</div>
 </body>
 
 </html>

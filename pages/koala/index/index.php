@@ -1,5 +1,6 @@
 {setLayout "koala"}
 
-{widget "page", array()}
-xxxx
+<!--{startBlock "content"}-->
 {widget "battery", array()}
+{widget "page", array()}
+<!--{endBlock}-->
