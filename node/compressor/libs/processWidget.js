@@ -166,6 +166,7 @@ Widget.prototype = {
 			},
 			recontent: function(filepath, content){
 				if( dest.js && dest.css ){
+					content += '{pageStatic "' + dest.js + '" "' + dest.css + '"}';
 				}
 				content = compileTpl(content);
 				return content;

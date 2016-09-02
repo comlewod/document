@@ -11,6 +11,7 @@ var md5 = require('./md5');
 
 var resolvePath = require('./resolvePath');
 var processor = require('./processor');
+var compileTpl = require('./compileTpl');
 
 var Images = function(opts){
 	var self = this;
@@ -148,9 +149,35 @@ Images.prototype = {
 				var name = _info.filename + '.' + _info.ext;
 
 				//静态资源内容通过比如static.zealer.com域名来访问，在nginx上配置访问文件
-				_reg = new RegExp(name, 'g');
-				content = content.replace(_reg, path.join(config.STATIC_IMG, _replaceName));
+				//_reg = new RegExp(name, 'g');
+				//content = content.replace(_reg, path.join(config.STATIC_IMG, _replaceName));
+
+				if( info.ext == 'php' ){
+					content = content.replace(_reg, "{yiiApp 'STATIC_HOST'}page/img/" + _replaceName);
+				} else if( info.ext == 'js' ){
+					//ex: src = str_1 + "test.png" + str_2
+					_reg = new RegExp('"' + name + '"', 'g');
+					content = content.replace(_reg, 'window.STATIC_HOST+"page/img/' + _replaceName + '"');
+
+					//ex: src = str + 'test.png' + str_2
+					_reg = new RegExp('\'' + name + '\'', 'g');
+					content = content.replace(_reg, 'window.STATIC_HOST+\'page/img/' + _replaceName + '\'');
+
+					//ex: 'url(test.png)'
+					_reg = new RegExp('\'url\\(' + name + '\\)\'', 'g');
+					content = content.replace(_reg, '\'url(\'+window.STATIC_HOST+\'' + _replaceName + ')\'');
+
+					//ex: "url(test.png)"
+					_reg = new RegExp('"url\\(' + name + '\\)"', 'g');
+					content = content.replace(_reg, '"url("+window.STATIC_HOST+"page/img/' + _replaceName + ')"');
+				} else if( info.ext == 'css' || info.ext == 'less' ){
+					_reg = new RegExp('url\\(' + name + '\\)', 'g');
+					content = content.replace(_reg, 'url(/page/img/' + _replaceName + ')');
+				}
 			}
+		}
+		if( info.ext == 'php' ){
+			content = compileTpl(content);
 		}
 		return content;
 	}

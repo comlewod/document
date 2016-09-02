@@ -13,12 +13,26 @@ class CController extends Controller {
 	public $_layoutData = array();	//传递给给layout的数据 
 	public $_tplData = array();		//传递给模板页面的数据
 	public $_widget = array();
+	public $_scriptPool = '';		//将每个widget的js调用代码连在一起
 	
 	/*
 	 * 设置layout，传入的是项目名
 	 */
 	public function setLayout($name = ''){
 		$this->_layout_ = $name;
+	}
+	
+	/*
+	 * 页面SDK
+	 */
+	public function setTitle($title = ''){
+		$this->setData('title', $title);
+	}
+	public function setDescription($description = ''){
+		$this->setData('description', $description);
+	}
+	public function setKeywords($keywords = ''){
+		$this->setData('keywords', $keywords);
 	}
 
 	/*
@@ -32,6 +46,23 @@ class CController extends Controller {
 		$_buffer = ob_get_clean();	//这里没有输出缓冲区，而是将缓冲内容保存起来
 		$this->setData($this->_tempVal, $_buffer);
 	}
+
+	public function scriptPoolStart(){
+		ob_start();
+	}
+
+	public function scriptPoolEnd(){
+		$_buffer = ob_get_clean();
+		$this->_scriptPool .= $_buffer;
+	}
+
+	/*
+	 * 替换layout中的js 和 css
+	 */
+	 public function pageStatic($js_name = '', $css_name = ''){
+		 $this->setData('page_js', $js_name);
+		 $this->setData('page_css', $css_name);
+	 }
 
 	/*
 	 * 设置变量数据
@@ -50,7 +81,10 @@ class CController extends Controller {
 	}
 
 	/*
-	 * 加载widget
+	 * 加载widget，
+	 * $file_name		widget的名称
+	 * $param			传给widget的数组
+	 * $tpl				$file_name该组件所在页面的文件夹，比如global、post
 	 */
 	public function loadWidget($file_name = '', $param = array(), $tpl = null){
 		if( empty($tpl) ){

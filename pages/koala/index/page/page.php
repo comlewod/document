@@ -1,1 +1,3 @@
-<div>这是page13123</div>
+<!--{scriptPool}-->
+G.use('index/page');
+<!--{/scriptPool}-->

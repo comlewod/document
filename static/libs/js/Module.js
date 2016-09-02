@@ -9,7 +9,7 @@ var G = G || {};
 		module.fn[name] = fn;
 	};
 	module.use = function(name, opts){
-		module.fn[name].init(opts);
+		module.fn[name].initialize(opts);
 	};
 	module.require = function(name, opts){
 		var now_fn = module.fn[name];
@@ -21,16 +21,3 @@ var G = G || {};
 	G.require = module.require;
 })();
 
-G.define('post/page', {
-	init: function(opts){
-		this.bindEvent();
-	},
-	bindEvent: function(){
-		console.log(23424);
-	}
-});
-
-//G.use('post/page', {name: 'comlewod'});
-
-var re = G.require('post/page');
-//re.bindEvent();
