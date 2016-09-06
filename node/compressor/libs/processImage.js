@@ -1,5 +1,5 @@
 /* 
- * 处理tpl项目下所有widget的图片 
+ * 处理tpl项目下所有widget的php、js、css、图片
  */
 
 var gulp = require('gulp');
@@ -149,7 +149,7 @@ Images.prototype = {
 				var name = _info.filename + '.' + _info.ext;
 
 				//静态资源内容通过比如static.zealer.com域名来访问，在nginx上配置访问文件
-				//_reg = new RegExp(name, 'g');
+				_reg = new RegExp(name, 'g');
 				//content = content.replace(_reg, path.join(config.STATIC_IMG, _replaceName));
 
 				if( info.ext == 'php' ){

@@ -59,7 +59,7 @@ var process = function(src){
 		//tplDir为项目名称
 		new processLibs(tplDir); 
 	} else {
-		//项目里的其它页面
+		//项目里的其它页面，这里下面所打包的widget和上面的Libs打包不相关，保持组件的独立性
 		new processWidget(src);
 	}
 };

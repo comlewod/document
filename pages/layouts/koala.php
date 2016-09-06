@@ -27,7 +27,7 @@ var STATIC_HOST = "{yiiApp 'STATIC_HOST'}";
 	<script src="{yiiApp 'STATIC_HOST'}page/js/libs.js"></script>
 	<script src="{yiiApp 'STATIC_HOST'}page/js/global.js"></script>
 	<? if( isset($page_js) && $page_js ){ ?>
-	<script src="{yiiApp 'STATIC_HOST'}page/js/{$page_js}.js"></script>
+	<script src="{yiiApp 'STATIC_HOST'}page/js/{$page_js}"></script>
 	<? } ?>
 	<script>
 	{$this->_scriptPool}

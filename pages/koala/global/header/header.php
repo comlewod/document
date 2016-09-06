@@ -1,7 +1,6 @@
 <div class="global_header">
-	<div style="background: url(header_img.gif);">背景图</div>
-	<div class="bg"></div>
-	<img src="header_img.gif" />
+	<div class="header_logo"></div>
+	<div class="header_title">Header</div>
 </div>
 
 <!--{scriptPool}-->

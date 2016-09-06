@@ -56,7 +56,7 @@ Widget.prototype = {
 				var matches = content.match(config.widget_reg) || [];
 				for( var i=0; i<matches.length; i++ ){
 					var name = matches[i].replace(config.widget_reg, '$1');
-					name = name.split(',')[0].replace(config.widget_name_reg, "");
+					name = name.split(',')[0].replace(config.widget_name_reg, "");//widget的名称
 					if( !!!widgets[name] ){
 						widgets[name] = 1;
 					}
@@ -92,6 +92,7 @@ Widget.prototype = {
 		process.start();
 	},
 	
+	//合并页面下的所有widget的css和js
 	processStatic: function(filepath, widgets){
 		var self = this;
 		var files = {js: [], css: []};
@@ -151,7 +152,8 @@ Widget.prototype = {
 
 		process.start();
 	},
-
+	
+	//将上面打包完的js和css文件信息记录到php页面中
 	replacePath: function(filepath, dest){
 		var process = new processor({
 			files: {
@@ -165,6 +167,7 @@ Widget.prototype = {
 				return info.tpl.dir + '_' + info.tpl.name + '_' + info.filename;
 			},
 			recontent: function(filepath, content){
+				//添加php方法，将js和css打包后的文件路径在这里记下
 				if( dest.js && dest.css ){
 					content += '{pageStatic "' + dest.js + '" "' + dest.css + '"}';
 				}

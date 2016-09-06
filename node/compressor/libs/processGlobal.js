@@ -103,7 +103,7 @@ var Global = function(is_min, lib_dest, tplDir){
 		is_compile: true
 	});
 	
-	//打包layouts文件
+	//打包layouts文件，一个layouts文件有唯一对应的global静态资源
 	var replacePath = function(){
 		var process = new processor({
 			files: {

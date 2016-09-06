@@ -1,4 +1,74 @@
+@charset "UTF-8";
 @blue: #0096ff;
+/* CSS Document */
+
+/* reset.css */
+body,ul,dl,dd,p,h1,h2,h3,hr,form,input,textarea,select {
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+}
+
+li {
+    list-style: none;
+}
+
+h2 {
+    font-weight: normal;
+}
+
+h3 {
+    font-weight: normal;
+}
+
+img {
+    border: none;
+}
+/* reset.css end */
+
+/* public.css */
+body {
+    font-size: 13px;
+    color: #333;
+    line-height: 1.7;
+    /*font-family: "Helvitica Neue", Helvitica, Arial, sans-serif;*/
+    font-family: "Helvitica Neue", Helvitica, Arial, "Hiragino Sans GB", "Microsoft YaHei", "Arial Regular" ,"Microsoft JhengHei"
+  , sans-serif;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.clear {
+  zoom: 1;
+}
+
+.clear:after {
+  content: "."; 
+  display: block; 
+  height: 0;  
+  visibility: hidden; 
+  clear: both; 
+  overflow: hidden;
+}
+/*  公用样式 输入框 */
+textarea, input {
+    border: 1px solid #c4c8d0;
+    outline: 0;
+    padding: 12px;
+    font-size: 13px;
+        &:focus {
+            border: 1px solid #abb0bc;
+        }
+
+
+}
+table {
+    border: 0;
+    margin: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+
+}
 
 #div1 {
 	width: 200px;

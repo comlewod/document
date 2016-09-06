@@ -93,7 +93,7 @@ class CController extends Controller {
 				$tpl = str_replace('Controller', '', lcfirst($this->getClassName($this)));
 			}
 		}
-		$file_name = $tpl . '_' .$file_name;//ex：koala_post
+		$file_name = $tpl . '_' .$file_name;//ex：post_battery
 
 		if( !isset($this->_widget[$file_name]) ){
 			$this->_widget[$file_name] = 1;
